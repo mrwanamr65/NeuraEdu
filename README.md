@@ -69,9 +69,12 @@ A custom-built, secure messaging engine:
 > **Note:** Screenshots highlighting the Glassmorphism UI and the YOLOv8 Detection window.
 
 | Admin Analytics Dashboard | AI Camera Detection in Action |
-| :---: | :---: |
-| ![Admin Dashboard](imgs/admin.png) | ![Headteacher Dashboard](imgs/headteacher.png) | ![Teacher Dashboard](imgs/teacher.png) | ![Student Dashboard](imgs/student.png) | ![Parent Dashboard](imgs/parent.png) | ![Home Page](imgs/main.png) |
-| *Real-time analytics using Chart.js* | *Live YOLO tracking and Face Match* |
+| :---: |
+| ![Admin Dashboard](imgs/admin.png) 
+![Headteacher Dashboard](imgs/headteacher.png) 
+![Teacher Dashboard](imgs/teacher.png) 
+![Student Dashboard](imgs/student.png) 
+![Parent Dashboard](imgs/parent.png) | ![Home Page](imgs/main.png) |
 
 ---
 
