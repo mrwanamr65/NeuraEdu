@@ -1,0 +1,346 @@
+:root {
+    --bg-dark: #0b0f17;
+    --bg-gradient: linear-gradient(135deg, #0b0f17 0%, #1a2236 100%);
+    --fg-light: #e9eef9;
+    --accent-primary: #00d4ff;
+    --accent-secondary: #0099cc;
+    --accent-tertiary: #0066cc;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.6);
+    --border-radius: 16px;
+    --transition: all 0.3s ease;
+    --circle-1: rgba(0, 212, 255, 0.15);
+    --circle-2: rgba(0, 153, 204, 0.1);
+    --circle-3: rgba(0, 102, 204, 0.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-gradient);
+    color: var(--fg-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 20px;
+    position: relative;
+}
+
+/* 🔵 دوائر خلفية متحركة */
+.circles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.circles div {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(5px);
+    animation: float 25s infinite linear;
+    opacity: 0.5;
+}
+
+.circles div:nth-child(1) {
+    width: 80px; height: 80px; background: var(--circle-1); top: 10%; left: 10%; animation-duration: 25s; animation-delay: 0s;
+}
+.circles div:nth-child(2) {
+    width: 120px; height: 120px; background: var(--circle-2); top: 70%; left: 80%; animation-duration: 35s; animation-delay: 5s;
+}
+.circles div:nth-child(3) {
+    width: 60px; height: 60px; background: var(--circle-3); top: 30%; left: 75%; animation-duration: 20s; animation-delay: 2s;
+}
+.circles div:nth-child(4) {
+    width: 100px; height: 100px; background: var(--circle-1); top: 60%; left: 15%; animation-duration: 40s; animation-delay: 7s;
+}
+.circles div:nth-child(5) {
+    width: 70px; height: 70px; background: var(--circle-2); top: 20%; left: 50%; animation-duration: 30s; animation-delay: 3s;
+}
+.circles div:nth-child(6) {
+    width: 90px; height: 90px; background: var(--circle-3); top: 80%; left: 40%; animation-duration: 28s; animation-delay: 6s;
+}
+.circles div:nth-child(7) {
+    width: 50px; height: 50px; background: var(--circle-1); top: 40%; left: 5%; animation-duration: 22s; animation-delay: 4s;
+}
+.circles div:nth-child(8) {
+    width: 110px; height: 110px; background: var(--circle-2); top: 5%; left: 65%; animation-duration: 38s; animation-delay: 1s;
+}
+.circles div:nth-child(9) {
+    width: 40px; height: 40px; background: var(--circle-3); top: 85%; left: 25%; animation-duration: 32s; animation-delay: 2s;
+}
+.circles div:nth-child(10) {
+    width: 130px; height: 130px; background: var(--circle-1); top: 15%; left: 85%; animation-duration: 45s; animation-delay: 8s;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+    text-align: center;
+    animation: fadeIn 1s ease-out;
+    background: rgba(13, 19, 33, 0.7);
+    border-radius: var(--border-radius);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+/* تأثير الكتابة المتحركة */
+.typewriter-text {
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary), var(--accent-primary));
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 10px rgba(0, 212, 255, 0.3);
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typing 2.5s steps(30, end) forwards, gradientMove 3s linear infinite;
+    width: 0;
+    max-width: 100%;
+    letter-spacing: 0.5px;
+    margin: 0 auto;
+}
+
+/* العنوان الفرعي */
+.gradient-subtitle {
+    font-size: 1.5rem;
+    margin: 10px 0 30px;
+    color: var(--fg-light);
+    text-shadow: 0 1px 5px rgba(0, 212, 255, 0.2);
+    font-weight: 400;
+    opacity: 0;
+    animation: fadeIn 1s ease-out 2.5s forwards;
+}
+
+/* الوصف */
+.description {
+    font-size: 1.1rem;
+    margin: 35px auto 25px;
+    opacity: 0.9;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 3s forwards;
+    max-width: 600px;
+}
+
+/* شبكة الأدوار */
+.role-selection {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    gap: 18px;
+    margin: 25px auto;
+    max-width: 800px;
+}
+
+/* الأزرار - تم توحيد اللون */
+.btn {
+    padding: 25px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    
+    /* ✅ توحيد اللون - كل الأزرار بنفس التدرج */
+    background: linear-gradient(135deg, #00d4ff, #0099cc, #0066cc);
+    color: white;
+}
+
+/* تأثير الضوء الخفيف على الزر */
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+    border-radius: var(--border-radius);
+    z-index: 1;
+}
+
+.btn span {
+    position: relative;
+    z-index: 2;
+}
+
+/* تأثير عند التحويم */
+.btn:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(0, 212, 255, 0.4);
+}
+
+/* 🔭 النجوم */
+.stars-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.star {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: twinkle linear infinite;
+}
+
+.star:nth-child(1) { top: 15%; left: 20%; animation-duration: 3s; }
+.star:nth-child(2) { top: 25%; left: 80%; animation-duration: 4s; animation-delay: 1s; }
+.star:nth-child(3) { top: 40%; left: 40%; animation-duration: 5s; animation-delay: 0.5s; }
+.star:nth-child(4) { top: 60%; left: 60%; animation-duration: 6s; animation-delay: 2s; }
+.star:nth-child(5) { top: 75%; left: 25%; animation-duration: 7s; animation-delay: 1.5s; }
+.star:nth-child(6) { top: 85%; left: 75%; animation-duration: 4s; animation-delay: 3s; }
+.star:nth-child(7) { top: 35%; left: 10%; animation-duration: 5s; animation-delay: 0.7s; }
+.star:nth-child(8) { top: 50%; left: 90%; animation-duration: 8s; animation-delay: 2.5s; }
+.star:nth-child(9) { top: 20%; left: 50%; animation-duration: 6s; animation-delay: 1.2s; }
+.star:nth-child(10) { top: 65%; left: 30%; animation-duration: 5s; animation-delay: 0.3s; }
+
+/* تأثير النجوم */
+@keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* حركة الدوائر */
+@keyframes float {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(20px, 20px) rotate(90deg); }
+    50% { transform: translate(0, 40px) rotate(180deg); }
+    75% { transform: translate(-20px, 20px) rotate(270deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+/* تأثيرات الظهور */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+/* ظهور الأزرار واحد تلو الآخر */
+.role-selection button {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.role-selection button:nth-child(1) { animation-delay: 0.8s; }
+.role-selection button:nth-child(2) { animation-delay: 1.0s; }
+.role-selection button:nth-child(3) { animation-delay: 1.2s; }
+.role-selection button:nth-child(4) { animation-delay: 1.4s; }
+.role-selection button:nth-child(5) { animation-delay: 1.6s; }
+
+/* شريط البحث */
+.search-container {
+    margin: 30px auto;
+    max-width: 400px;
+    opacity: 0;
+    animation: fadeIn 1s ease-out 4.5s forwards;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--fg-light);
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.search-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+}
+
+.search-input::placeholder {
+    color: rgba(233, 238, 249, 0.6);
+}
+
+.education-admin-btn{
+    grid-column: span 2;      
+    justify-self: center;       
+    width: calc(100% - 20px);    
+    max-width: 400px;          
+}
+
+
+/* إصدار الجوال */
+@media (max-width: 768px) {
+    .container {
+        margin: 20px auto;
+        padding: 20px;
+    }
+    .typewriter-text {
+        font-size: 1.8rem;
+        white-space: normal;
+    }
+    .gradient-subtitle {
+        font-size: 1.3rem;
+    }
+    .description {
+        font-size: 1rem;
+        padding: 0 15px;
+    }
+    .role-selection {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+    .btn {
+        padding: 20px 15px;
+        font-size: 1.1rem;
+    }
+    .search-container {
+        margin: 25px 15px;
+        max-width: calc(100% - 30px);
+    }
+}

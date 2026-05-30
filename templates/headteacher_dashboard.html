@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Headteacher Dashboard</title>
+    <!-- ربط ملف CSS الخاص بك -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/headteacher_dashboard.css') }}">
+    <!-- خط Cairo للدعم الجيد -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+    </div>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="container">
+
+        <!-- عنوان بتأثير الكتابة -->
+        <h1 class="typewriter-text">Headteacher Panel</h1>
+
+        <!-- عنوان فرعي -->
+        <h2 class="section-title">Choose an Action</h2>
+
+        <!-- حاوية الخيارات -->
+        <div class="options-container">
+            <!-- إدارة الفصول -->
+            <a href="{{ url_for('head_classes') }}" class="option-btn">
+                Classes
+            </a>
+
+            <!-- إدارة الطلاب -->
+            <a href="{{ url_for('manage_students') }}" class="option-btn">
+                Students
+            </a>
+
+            <!-- إدارة المعلمين -->
+            <a href="{{ url_for('manage_teachers') }}" class="option-btn">
+                Teachers
+            </a>
+
+            <!-- إدارة المواد -->
+            <a href="{{ url_for('manage_subjects') }}" class="option-btn">
+                Subjects
+            </a>
+
+            <!-- إشعارات أولياء الأمور -->
+            <a href="{{ url_for('manage_parent_notifications') }}" class="option-btn">
+                Parent Notifications
+            </a>
+
+            <a href="{{ url_for('chats', user_type='headteacher') }}" class="option-btn">
+                Chats
+            </a>
+
+            <!-- إدارة النظام -->
+            <a href="{{ url_for('manage_system') }}" class="option-btn">
+                Manage System
+            </a>
+        </div>
+
+        <!-- رابط العودة -->
+        <a href="{{ url_for('index') }}" class="back-link">Back to Home</a>
+    </div>
+
+</body>
+</html>

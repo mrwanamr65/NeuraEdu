@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_system.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <h1 class="typewriter-text">Manage System</h1>
+        
+        <div class="system-status">
+            <p class="status-text">System Status: <span>{{ system_status }}</span></p>
+        </div>
+        
+        <div class="actions">
+            <!-- إزالة stage من query string في طلبات fetch -->
+            <button class="action-btn start-btn" onclick="startSystem()">Start System</button>
+            <button class="action-btn stop-btn" onclick="stopSystem()">Stop System</button>
+        </div>
+        
+        <!-- رابط العودة للداشبورد باستخدام url_for وبدون تمرير معلمات يدوية -->
+        <a href="{{ url_for('headteacher_dashboard_page') }}" class="back-link">Back to dashboard</a>
+    </div>
+
+    <script>
+        async function startSystem() {
+            try {
+                // إزالة stage من query string
+                const response = await fetch("{{ url_for('start_system_route') }}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert("Failed to start system: " + (result.error || "Unknown error"));
+                }
+            } catch (err) {
+                console.error("Error starting system:", err);
+                alert("Error starting system.");
+            }
+        }
+
+        async function stopSystem() {
+            try {
+                // إزالة stage من query string
+                const response = await fetch("{{ url_for('stop_system_route') }}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert("Failed to stop system: " + (result.error || "Unknown error"));
+                }
+            } catch (err) {
+                console.error("Error stopping system:", err);
+                alert("Error stopping system.");
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Buttons</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/teacher_choose_class.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <!-- الدوائر المتحركة -->
+    <div class="background-circle circle-1"></div>
+    <div class="background-circle circle-2"></div>
+    <div class="background-circle circle-3"></div>
+    <!-- النجوم المتلألئة -->
+    <div class="stars">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <div class="typing-container">
+            <h1 class="typing-effect">Select a Class</h1>
+            <p class="description subtitle">Click on the button for your class:</p>
+
+        </div>
+
+        <!-- التحقق من الجلسة -->
+        {% if session['user_type'] == 'teacher' and session['teacher_code'] and session['school_stage'] %}
+            <!-- أزرار الفصول -->
+            <div class="buttons-container">
+                {% for class_name in classes_list %}
+                    <a href="{{ url_for(url, class_name=class_name, school=school, teacher_code=teacher_code) }}" class="btn">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>{{ class_name | safe }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="error">Unauthorized access. Please log in as a teacher.</p>
+        {% endif %}
+        
+        {% if session['user_type'] == 'teacher' %}
+            <a href="{{ url_for('teacher_dashboard') }}" class="back-link">Back to Dashboard</a>
+        {% endif %}
+    </div>
+</body>
+</html>

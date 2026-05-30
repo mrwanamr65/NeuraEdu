@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/parent.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <h1 class="typewriter-text">Welcome, Parent!</h1>
+        <p class="instruction">Please enter your child's information:</p>
+
+        <!-- عرض رسالة الخطأ إذا وجدت -->
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <!-- استخدام url_for للراوت الصحيح -->
+        <div class="form-container">
+            <form method="POST" action="{{ url_for('parent_login') }}" class="parent-form">
+                <div class="form-group">
+                    <label for="school_stage">Select your child's school stage:</label>
+                    <select id="school_stage" name="school_stage" class="form-control" required>
+                        <option value="">-- Select a stage --</option>
+                        <option value="Elementary">Elementary school</option>
+                        <option value="Middle">Middle school</option>
+                        <option value="High">High school</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="student_grade">Enter your child's grade:</label>
+                    <input type="number" id="student_grade" name="student_grade" class="form-control" min="1" max="12" required placeholder="e.g., 1, 2, ..., 12">
+                </div>
+
+                <div class="form-group">
+                    <label for="student_class_num">Enter your child's class number:</label>
+                    <input type="number" id="student_class_num" name="student_class_num" class="form-control" min="1" max="10" required placeholder="e.g., 1, 2, ..., 6">
+                </div>
+
+                <div class="form-group">
+                    <label for="student_code">Enter your child's code:</label>
+                    <input type="number" id="student_code" name="student_code" class="form-control" required placeholder="Student's unique code">
+                </div>
+
+                <div class="form-group">
+                    <label for="parent_password">Enter your password:</label>
+                    <input type="password" id="parent_password" name="parent_password" class="form-control" required placeholder="Your parent password">
+                </div>
+
+                <button type="submit" class="submit-btn">Login as Parent</button>
+            </form>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="back-link">Go back to home</a>
+    </div>
+</body>
+</html>

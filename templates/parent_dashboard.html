@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Dashboard - {{ parent_name }}</title>
+    <!-- ربط ملف CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/parent_dashboard.css') }}">
+    <!-- خط Cairo للدعم الجيد -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+    </div>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="container">
+
+        <!-- عنوان بتأثير الكتابة -->
+        <h1 class="typewriter-text">Parent Dashboard</h1>
+
+        <!-- اسم الطالب -->
+        <p class="child-info">For Child: <strong>{{ student.name }}</strong> (Code: {{ student.code }})</p>
+
+        <!-- معلومات الطالب -->
+        <div class="info-container">
+            <h2 class="section-title">Child's Information</h2>
+            <div class="info-item">
+                <span class="info-label">Name:</span>
+                <span class="info-value">{{ student.name }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Code:</span>
+                <span class="info-value">{{ student.code }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Class:</span>
+                <span class="info-value">{{ class_name }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">School Stage:</span>
+                <span class="info-value">{{ school_stage }}</span>
+            </div>
+        </div>
+
+        <!-- أزرار التنقل -->
+        <div class="navigation-container">
+            <h2 class="section-title">Navigate to Sections</h2>
+            <div class="nav-links">
+                <a href="{{ url_for('parent_attendance', student_code=student.code, school_stage=school_stage, class_name=class_name) }}" class="nav-link">
+                    View Attendance
+                </a>
+                <a href="{{ url_for('parent_evaluations', student_code=student.code, school_stage=school_stage, class_name=class_name) }}" class="nav-link">
+                    View Evaluations
+                </a>
+                <a href="{{ url_for('parent_class_notifications', student_code=student.code, school_stage=school_stage, class_name=class_name) }}" class="nav-link">
+                    View Class Notifications
+                </a>
+                <a href="{{ url_for('parent_notifications', student_code=student.code, school_stage=school_stage, class_name=class_name) }}" class="nav-link">
+                    View Parent Notifications
+                </a>
+                <a href="/chats" class="nav-link">
+                    Chats
+                </a>
+
+            </div>
+        </div>
+
+        <!-- رابط تسجيل الخروج -->
+        <a href="{{ url_for('index') }}" class="logout-link">Logout</a>
+    </div>
+
+</body>
+</html>

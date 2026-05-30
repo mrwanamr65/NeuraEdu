@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance - {{ student.name }}</title>
+    
+    <!-- استخدام نفس ملف CSS للتصميم الجمالي -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/parent_attendance.css') }}">
+    
+    <!-- خطوط مهمة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- الخلفية المتحركة (الدوائر) -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <!-- رأس الصفحة -->
+        <div class="dashboard-header">
+            <h1>Attendance for {{ student.name }}</h1>
+            <p>Class: {{ class_name }} | School Stage: {{ school_stage }}</p>
+        </div>
+
+        <!-- ⚠️ كروت الملخص: تُعرض فقط إذا كانت البيانات متوفرة -->
+        {% if total_days is defined and present_count is defined and absent_count is defined and attendance_rate is defined %}
+        <div class="attendance-summary">
+            <div class="summary-card">
+                <i class="fas fa-calendar-check"></i>
+                <h3>Total Days</h3>
+                <p>{{ total_days }}</p>
+            </div>
+            <div class="summary-card">
+                <i class="fas fa-user-check"></i>
+                <h3>Present</h3>
+                <p>{{ present_count }}</p>
+            </div>
+            <div class="summary-card">
+                <i class="fas fa-user-times"></i>
+                <h3>Absent</h3>
+                <p>{{ absent_count }}</p>
+            </div>
+            <div class="summary-card">
+                <i class="fas fa-percentage"></i>
+                <h3>Attendance Rate</h3>
+                <p>{{ attendance_rate }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- جدول الحضور -->
+        <div class="section">
+            <h2 class="section-title">Attendance Records</h2>
+            {% if schedule %}
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Period</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in schedule %}
+                    <tr>
+                        <td>{{ record.date }}</td>
+                        <td>{{ record.session }}</td>
+                        <td class="status-{{ record.status.lower() }}">{{ record.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="no-records">
+                <p><i class="fas fa-calendar-times"></i> No attendance records found.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- أزرار التنقل (بنفس التصميم الجمالي) -->
+        <div class="nav-links">
+            <a href="{{ url_for('parent_dashboard') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <a href="{{ url_for('index') }}" class="btn btn-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- تفاعل الأزرار (مطابق للملف الأول) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const backBtn = document.querySelector('.btn-secondary');
+            const logoutBtn = document.querySelector('.btn-danger');
+
+            if (backBtn) {
+                backBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // يمكنك استبدال هذا بـ window.location
+                    window.location.href = this.getAttribute('href');
+                });
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to log out?')) {
+                        window.location.href = this.getAttribute('href');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

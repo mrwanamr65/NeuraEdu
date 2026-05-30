@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance - {{ class_name | safe }}</title>
+    
+    <!-- استخدام نفس ملف CSS للتصميم الجمالي -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student_attendance.css') }}">
+    
+    <!-- خطوط مهمة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+
+</head>
+<body>
+    <!-- الخلفية المتحركة (الدوائر) -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <!-- التحقق من الجلسة -->
+        {% if session['user_type'] == 'teacher' and session['teacher_code'] and session['school_stage'] %}
+            <h1 class="typewriter-text">Attendance for Class: {{ class_name | safe }}</h1>
+
+            <!-- جدول الطلاب -->
+            <h2 class="section-title">Students</h2>
+            <table class="notification-list">
+                <thead>
+                    <tr>
+                        <th>Student Code</th>
+                        <th>Student Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for code, name in students.items() %}
+                    <tr>
+                        <td>{{ code | safe }}</td>
+                        <td>{{ name | safe }}</td>
+                        <td>
+                            <button class="action-btn view-attendance-btn" 
+                                    data-student-code="{{ code | safe }}" 
+                                    data-class-name="{{ class_name | safe }}" 
+                                    data-school="{{ school | safe }}"
+                                    onclick="toggleAttendance(this)">
+                                <i class="fas fa-eye"></i> View Attendance
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- صف مخفي لعرض بيانات الحضور -->
+                    <tr class="attendance-row" id="attendance-{{ code | safe }}">
+                        <td colspan="3">
+                            <div class="attendance-table">
+                                <!-- سيتم ملؤه ببيانات الحضور عبر JavaScript -->
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="notification-item">
+                <p style="color: #e74c3c; font-weight: bold;">Unauthorized access. Please log in as a teacher.</p>
+            </div>
+        {% endif %}
+
+        <!-- رابط العودة -->
+        {% if session['user_type'] == 'teacher' %}
+            <a href="{{ url_for('teacher_dashboard') }}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        {% endif %}
+    </div>
+
+    <script>
+        async function toggleAttendance(button) {
+            const studentCode = button.getAttribute('data-student-code');
+            const className = button.getAttribute('data-class-name');
+            const school = button.getAttribute('data-school');
+            const attendanceRow = document.getElementById(`attendance-${studentCode}`);
+            const attendanceTableDiv = attendanceRow.querySelector('.attendance-table');
+
+            // إذا كان الصف ظاهرًا، إخفاؤه
+            if (attendanceRow.style.display === 'table-row') {
+                attendanceRow.style.display = 'none';
+                button.innerHTML = '<i class="fas fa-eye"></i> View Attendance';
+                return;
+            }
+
+            // طلب AJAX لجلب بيانات الحضور
+            try {
+                const response = await fetch(`${window.location.pathname}?class_name=${encodeURIComponent(className)}&school=${encodeURIComponent(school)}&student_code=${encodeURIComponent(studentCode)}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    // بناء جدول الحضور
+                    let html = `<h3>Attendance for ${data.selected_student} (${data.student_code})</h3>`;
+                    if (data.attendance && data.attendance.length > 0) {
+                        html += `
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Session</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+                        data.attendance.forEach(entry => {
+                            html += `
+                                <tr>
+                                    <td>${entry.date}</td>
+                                    <td>${entry.session}</td>
+                                    <td>${entry.status}</td>
+                                </tr>
+                            `;
+                        });
+                        html += `</tbody></table>`;
+                    } else {
+                        html += `<p>No attendance data available for this student.</p>`;
+                    }
+                    attendanceTableDiv.innerHTML = html;
+                    attendanceRow.style.display = 'table-row';
+                    button.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Attendance';
+                } else {
+                    attendanceTableDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
+                    attendanceRow.style.display = 'table-row';
+                }
+            } catch (error) {
+                attendanceTableDiv.innerHTML = `<p style="color: red;">Error fetching attendance data.</p>`;
+                attendanceRow.style.display = 'table-row';
+            }
+        }
+    </script>
+</body>
+</html>

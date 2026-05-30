@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Evaluations - {{ student_name if student_name else 'Student' }}</title>
+    
+    <!-- استخدام ملف CSS الموحّد للتصميم الجمالي -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student_evaluations.css') }}">
+    
+    <!-- خطوط مهمة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- الخلفية المتحركة (الدوائر) -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <!-- العنوان بتأثير الكتابة التلقائية -->
+        <h1 class="typewriter-text">Your Evaluations</h1>
+
+        <!-- قائمة التقييمات -->
+        <div class="notifications-container">
+            {% if evaluations %}
+                <table class="notification-list table">
+                    <thead>
+                        <tr>
+                            <th class="date-header">Date</th>
+                            <th>Evaluation</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for eval in evaluations %}
+                        <tr class="notification-item">
+                            <td class="date-cell">{{ eval.date | safe }}</td>
+                            <td>{{ eval.evaluation | safe }}</td>
+                            <td>
+                                {% if eval.note and eval.note.strip() != '' %}
+                                    {{ eval.note | safe }}
+                                {% else %}
+                                    <span style="color: #aaa; font-style: italic;">No notes</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-notifications">
+                    <i class="fas fa-star-half-alt"></i> {{ message | default("No evaluations available at the moment.") }}
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- رابط العودة -->
+        <a href="/student_dashboard" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</body>
+</html>

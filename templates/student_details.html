@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Details - {{ class_name }}</title>
+    
+    <!-- استخدام ملف CSS الموحّد للتصميم الجمالي -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student_details.css') }}">
+    
+    <!-- خطوط مهمة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- الخلفية المتحركة (الدوائر) -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <!-- العنوان -->
+        <h1 class="typewriter-text">Students in {{ class_name }}</h1>
+
+        <!-- قائمة الطلاب -->
+        <div class="notifications-container">
+            {% if students %}
+                <table class="notification-list table">
+                    <thead>
+                        <tr>
+                            <th>Student Code</th>
+                            <th>Student Name</th>
+                            <th>Parent/Guardian</th>
+                            <th>Evaluations</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr class="notification-item">
+                            <td>{{ student.code }}</td>
+                            <td>{{ student.name }}</td>
+                            <td>
+                                <strong>Name:</strong> {{ student.parent.name }}<br>
+                                <strong>Phone:</strong> {{ student.parent.phone }}
+                            </td>
+                            <td>
+                                {% if student.evaluations %}
+                                    <ul style="text-align: right; margin: 0; padding-right: 20px;">
+                                        {% for eval in student.evaluations %}
+                                        <li class="evaluation-item">
+                                            <span class="date-cell">{{ eval.date }}</span>: 
+                                            {{ eval.evaluation }}
+                                            {% if eval.note %} 
+                                                (Note: {{ eval.note }})
+                                            {% else %}
+                                                (No note)
+                                            {% endif %}
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <span>No evaluations</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" action="{{ url_for('delete_student_route') }}" class="delete-form" style="display: inline;">
+                                    <input type="hidden" name="class_name" value="{{ class_name }}">
+                                    <input type="hidden" name="student_code" value="{{ student.code }}">
+                                    <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this student?');">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-notifications">
+                    <i class="fas fa-users-slash"></i> No students available in this class.
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- رابط العودة -->
+        <a href="{{ url_for('manage_students') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Manage Students
+        </a>
+    </div>
+</body>
+</html>

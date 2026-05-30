@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - {{ name }}</title>
+    
+    <!-- استخدام ملف CSS الموحّد للتصميم الجمالي -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student_dashboard.css') }}">
+    
+    <!-- خطوط مهمة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- الخلفية المتحركة (الدوائر) -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <!-- العنوان بتأثير الكتابة التلقائية -->
+        <h1 class="typewriter-text">Welcome, {{ name }}!</h1>
+        
+        <!-- كود الطالب -->
+        <p class="student-code" style="color: var(--accent-primary); font-weight: 600; margin: 15px 0;">
+            Your student code: <span style="color: white; font-weight: normal;">{{ code }}</span>
+        </p>
+
+        <!-- أزرار الإجراءات -->
+        <div class="actions">
+            <form method="POST" action="/notifications">
+                {{ notifications_form.csrf_token }}
+                <input type="hidden" name="student_code" value="{{ code }}">
+                <input type="hidden" name="class_name" value="{{ class_name }}">
+                <button type="submit" class="action-btn">
+                    <i class="fas fa-bell"></i> Important Notifications
+                </button>
+            </form>
+
+            <a href="/chatbot" class="action-btn">
+                <i class="fas fa-robot"></i> Chat with Bot
+            </a>
+
+            <form method="POST" action="/evaluations">
+                {{ evaluations_form.csrf_token }}
+                <input type="hidden" name="student_code" value="{{ code }}">
+                <input type="hidden" name="class_name" value="{{ class_name }}">
+                <input type="hidden" name="school" value="{{ school }}">
+                <button type="submit" class="action-btn">
+                    <i class="fas fa-star"></i> Evaluations
+                </button>
+            </form>
+
+            <form method="POST" action="/student_educational_videos">
+                {{ videos_form.csrf_token }}
+                <input type="hidden" name="class_name" value="{{ class_name }}">
+                <input type="hidden" name="school" value="{{ school }}">
+                <button type="submit" class="action-btn">
+                    <i class="fas fa-video"></i> Educational Videos
+                </button>
+            </form>
+
+            <a href="{{ url_for('chats', user_type='student') }}" class="action-btn">
+                <i class="fas fa-comments"></i> Chats
+            </a>
+        </div>
+
+        <!-- جدول الحضور -->
+        <h2 class="section-title">Your Attendance Schedule</h2>
+        <table class="notification-list table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Session</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in schedule %}
+                <tr>
+                    <td>{{ entry.date }}</td>
+                    <td>Session {{ entry.session }}</td>
+                    <td class="{{ 'status-present' if entry.status == 'Present' else 'status-absent' }}">
+                        {{ entry.status }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- رابط تسجيل الخروج -->
+        <a href="/" class="logout-link" style="margin-top: 30px; display: inline-block;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</body>
+</html>

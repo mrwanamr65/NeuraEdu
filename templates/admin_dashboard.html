@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Floating Circles -->
+    <div class="floating-circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+    <!-- Twinkling Stars -->
+    <div class="stars">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2 class="sidebar-title">Attendance Options</h2>
+            <form method="POST" class="sidebar-form">
+                <div class="form-group">
+                    <label for="scope">Select Scope:</label>
+                    <select id="scope" name="scope" class="form-input" onchange="toggleSelections()">
+                        <option value="school">Entire School</option>
+                        <option value="grade">Specific Grade</option>
+                        <option value="class">Specific Class</option>
+                    </select>
+                </div>
+
+                <!-- Grade Selection (hidden initially) -->
+                <div id="grade-selection" class="form-group" style="display: none;">
+                    <label for="grade">Select Grade:</label>
+                    <select id="grade" name="grade" class="form-input">
+                        {% for grade in grades %}
+                            <option value="{{ grade }}">{{ grade }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Class Selection (hidden initially) -->
+                <div id="class-selection" class="form-group" style="display: none;">
+                    <label for="class_name">Select Class:</label>
+                    <select id="class_name" name="class_name" class="form-input">
+                        {% for class in classes %}
+                            <option value="{{ class }}">{{ class }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Date Range -->
+                <div class="form-group">
+                    <label for="start_date">Start Date:</label>
+                    <input type="date" id="start_date" name="start_date" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_date">End Date:</label>
+                    <input type="date" id="end_date" name="end_date" class="form-input" required>
+                </div>
+
+                <button type="submit" class="submit-btn"><i class="fas fa-chart-bar"></i> Generate Report</button>
+            </form>
+
+            <a href="{{ url_for('index') }}" class="back-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1 class="title">Attendance Dashboard</h1>
+                <p class="description">School Stage: {{ school_stage }} | Generated on: {{ current_date }}</p>
+            </div>
+
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+
+            {% if attendance_data %}
+                <!-- Statistics Overview -->
+                <div class="stats-overview">
+                    <div class="stat-card">
+                        <h3>Total Sessions</h3>
+                        <p>{{ total_sessions }}</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Overall Attendance Rate</h3>
+                        <p>{{ attendance_rate }}%</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Top Absent Student</h3>
+                        <p>{{ top_absent_student.name }} ({{ top_absent_student.absences }} absences)</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Average Daily Attendance</h3>
+                        <p>{{ average_daily_attendance }}%</p>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <!-- Daily Attendance Bar Chart -->
+                    <div class="chart-container">
+                        <h3>Daily Attendance Rate</h3>
+                        <canvas id="dailyAttendanceChart"></canvas>
+                    </div>
+
+                    <!-- Overall Presence Pie Chart -->
+                    <div class="chart-container">
+                        <h3>Presence vs Absence</h3>
+                        <canvas id="presencePieChart"></canvas>
+                    </div>
+
+                    <!-- Attendance Trend Line Chart -->
+                    <div class="chart-container">
+                        <h3>Attendance Trend Over Time</h3>
+                        <canvas id="attendanceTrendChart"></canvas>
+                    </div>
+                </div>
+            {% else %}
+                <p class="description">Select options from the sidebar to generate attendance reports.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Toggle selections based on scope
+        function toggleSelections() {
+            const scope = document.getElementById('scope').value;
+            document.getElementById('grade-selection').style.display = scope === 'grade' ? 'block' : 'none';
+            document.getElementById('class-selection').style.display = scope === 'class' ? 'block' : 'none';
+        }
+
+        // Focus/Blur effects
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', () => input.parentElement.classList.add('focused'));
+            input.addEventListener('blur', () => input.parentElement.classList.remove('focused'));
+        });
+
+        // Data Variables (to avoid linter errors)
+        {% if attendance_data %}
+        const dailyLabels = {{ daily_labels | tojson | safe }};
+        const dailyRates = {{ daily_rates | tojson | safe }};
+        const pieData = {{ pie_data | tojson | safe }};
+        const trendLabels = {{ trend_labels | tojson | safe }};
+        const trendRates = {{ trend_rates | tojson | safe }};
+
+        // Daily Attendance Bar Chart
+        const dailyCtx = document.getElementById('dailyAttendanceChart').getContext('2d');
+        new Chart(dailyCtx, {
+            type: 'bar',
+            data: {
+                labels: dailyLabels,
+                datasets: [{
+                    label: 'Attendance Rate (%)',
+                    data: dailyRates,
+                    backgroundColor: 'rgba(0, 212, 255, 0.6)',
+                    borderColor: '#00d4ff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true, max: 100 }
+                },
+                plugins: {
+                    legend: { display: true }
+                }
+            }
+        });
+
+        // Presence Pie Chart
+        const pieCtx = document.getElementById('presencePieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Present', 'Absent'],
+                datasets: [{
+                    data: pieData,
+                    backgroundColor: ['#00d4ff', '#ff6b6b']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+
+        // Attendance Trend Line Chart
+        const trendCtx = document.getElementById('attendanceTrendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: trendLabels,
+                datasets: [{
+                    label: 'Attendance Rate (%)',
+                    data: trendRates,
+                    borderColor: '#00d4ff',
+                    backgroundColor: 'rgba(0, 212, 255, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true, max: 100 }
+                }
+            }
+        });
+        {% endif %}
+    </script>
+</body>
+</html>

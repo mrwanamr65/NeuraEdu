@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluations - {{ student.name }}</title>
+    
+    <!-- استخدام ملف CSS الخاص بالتصميم الجمالي -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/parent_evaluations.css') }}">
+    
+    <!-- خطوط مهمة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- الخلفية المتحركة (الدوائر) -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <!-- رأس الصفحة -->
+        <div class="dashboard-header">
+            <h1>Evaluations for {{ student.name }}</h1>
+            <p>Class: {{ class_name }} | School Stage: {{ school_stage }}</p>
+        </div>
+
+       
+        <div class="section">
+            <h2 class="section-title">Recent Evaluations</h2>
+            <div class="evaluations-list">
+                {% if evaluations %}
+                    {% for evaluation in evaluations %}
+                    <div class="evaluation-item">
+                        <div class="evaluation-date"><i class="fas fa-calendar-alt"></i> {{ evaluation.date }}</div>
+                        <div class="evaluation-text">{{ evaluation.evaluation }}</div>
+                        {% if evaluation.note %}
+                        <div class="evaluation-note"><i class="fas fa-sticky-note"></i> Note: {{ evaluation.note }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="evaluation-item">
+                        <div class="evaluation-text"><i class="fas fa-inbox"></i> No evaluations found.</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- أزرار التنقل (بنفس التصميم الجمالي) -->
+        <div class="nav-links">
+            <a href="{{ url_for('parent_dashboard') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <a href="{{ url_for('index') }}" class="btn btn-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- تفاعل النقر على التقييم (مطابق للملف الأول) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const evaluationItems = document.querySelectorAll('.evaluation-item');
+            evaluationItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

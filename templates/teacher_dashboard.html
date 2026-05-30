@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/teacher_dashboard.css') }}">
+    <!-- إضافة Font Awesome لدعم الأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <!-- إضافة الدوائر المتحركة للخلفية -->
+    <div class="floating-circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+    <!-- إضافة النجوم المتلألئة -->
+    <div class="stars">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Welcome, Teacher!</h1>
+            <p class="description">Select an option to proceed:</p>
+        </div>
+
+        <!-- عرض رسالة الخطأ أو الإشعار إذا وجدت -->
+        {% if flash_message %}
+            <p class="flash-message {{ flash_type }}">
+                {% if flash_type == 'success' %}
+                    <i class="fas fa-check-circle"></i>
+                {% else %}
+                    <i class="fas fa-exclamation-circle"></i>
+                {% endif %}
+                {{ flash_message | safe }}
+            </p>
+        {% endif %}
+
+        <!-- التحقق من الجلسة -->
+        {% if session['user_type'] == 'teacher' and session['teacher_code'] and session['school_stage'] %}
+            <!-- أزرار التنقل -->
+            <div class="action-buttons">
+                <a href="{{ url_for('chatbot', teacher_code=session['teacher_code']) }}" class="btn chatbot-btn">
+                    <i class="fas fa-robot"></i>
+                    <span>Chat with Bot</span>
+                </a>
+                <a href="{{ url_for('choose_class_attendance', teacher_code=session['teacher_code'], stage=session['school_stage']) }}" class="btn attendance-btn">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Student Attendance</span>
+                </a>
+                <a href="{{ url_for('choose_class_evaluations', teacher_code=session['teacher_code'], stage=session['school_stage']) }}" class="btn feedback-btn">
+                    <i class="fas fa-comment-alt"></i>
+                    <span>Evaluations</span>
+                </a>
+                <a href="{{ url_for('choose_class_my_students', teacher_code=session['teacher_code'], stage=session['school_stage']) }}" class="btn students-btn">
+                    <i class="fas fa-users"></i>
+                    <span>My Students</span>
+                </a>
+                <a href="{{ url_for('choose_class_notifications', teacher_code=session['teacher_code'], stage=session['school_stage']) }}" class="btn notifications-btn">
+                    <i class="fas fa-bell"></i>
+                    <span>Add Notifications</span>
+                </a>
+                <a href="{{ url_for('teacher_videos', teacher_code=session['teacher_code'], stage=session['school_stage']) }}" class="btn videos-btn">
+                    <i class="fas fa-video"></i>
+                    <span>Educational Videos</span>
+                </a>
+                <a href="{{ url_for('chats', user_type='teacher') }}" class="btn chats-btn">
+                    <i class="fas fa-comments"></i>
+                    <span>Chats</span>
+                </a>
+            </div>
+        {% else %}
+            <p class="error">Unauthorized access. Please log in as a teacher.</p>
+            <a href="{{ url_for('index') }}" class="back-link">Go back to home</a>
+        {% endif %}
+
+        <!-- رابط العودة إلى الصفحة الرئيسية -->
+        {% if session['user_type'] == 'teacher' %}
+            <a href="{{ url_for('index') }}" class="back-link">Go back to home</a>
+        {% endif %}
+    </div>
+</body>
+</html>

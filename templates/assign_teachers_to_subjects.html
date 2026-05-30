@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/assign_teachers_to_subjects.css') }}">
+    <title>Assign Teachers to Subjects</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <h1 class="typewriter-text">Assign Teachers to Subjects - {{ stage }} School</h1>
+        
+        <!-- روابط التنقل باستخدام url_for وبدون تمرير stage يدويًا -->
+        <div class="nav-links">
+            <a href="{{ url_for('manage_subjects') }}">Manage Subjects</a> 
+            <a href="{{ url_for('browse_videos') }}">Browse All Videos</a>
+            <a href="{{ url_for('headteacher_dashboard_page') }}">Back to Dashboard</a>
+        </div>
+
+        {% if flash_message %}
+            <div class="alert alert-{{ flash_type }}">{{ flash_message }}</div>
+        {% endif %}
+
+        <div class="section">
+            <h2 class="section-title">Assign/Remove Teacher</h2>
+            <!-- إزالة input stage المخفي لأن stage تؤخذ من session -->
+            <form method="post">
+                <div class="form-group">
+                    <label for="subject_name">Subject:</label>
+                    <select id="subject_name" name="subject_name" class="form-control" required>
+                        <option value="">-- Select Subject --</option>
+                        {% for subject in subjects_list %}
+                            <option value="{{ subject }}">{{ subject }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="teacher_code">Teacher:</label>
+                    <select id="teacher_code" name="teacher_code" class="form-control" required>
+                        <option value="">-- Select Teacher --</option>
+                        {% for code, name in all_teachers.items() %}
+                            <option value="{{ code }}">{{ name }} (Code: {{ code }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- تغيير القيم هنا -->
+                <input type="submit" name="action" value="Add Teacher" class="assign-btn" /> 
+                <input type="submit" name="action" value="Remove Teacher" class="remove-btn"/>
+            </form>
+
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Subjects and Assigned Teachers</h2>
+            {% if subjects_with_teachers %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Assigned Teachers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subject_name, teachers_list in subjects_with_teachers.items() %}
+                            <tr>
+                                <td><strong>{{ subject_name }}</strong></td>
+                                <td>
+                                    {% if teachers_list %}
+                                        <ul>
+                                            {% for teacher in teachers_list %}
+                                                <li>{{ teacher.name }} (Code: {{ teacher.code }})
+                                                    <!-- Optional: Add a quick remove button for each teacher -->
+                                                    <!-- إزالة input stage المخفي من النموذج السريع -->
+                                                    <form method="post" style="display:inline;">
+                                                        <input type="hidden" name="subject_name" value="{{ subject_name }}">
+                                                        <input type="hidden" name="teacher_code" value="{{ teacher.code }}">
+                                                        <input type="submit" name="action" value="Remove" class="remove-btn" style="font-size: 0.8em; padding: 2px 5px;" />
+                                                    </form>
+                                                    
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <em>No teachers assigned</em>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-students">No subjects or teachers found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

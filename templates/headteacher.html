@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Headteacher Login</title>
+    <!-- ربط ملف CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/headteacher.css') }}">
+    <!-- خط Cairo للدعم الجيد -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+    </div>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="container">
+
+        <!-- عنوان بتأثير الكتابة -->
+        <h1 class="typewriter-text">Headteacher Login</h1>
+
+        <!-- وصف -->
+        <p class="section-title">Please enter your credentials</p>
+
+        <!-- نموذج تسجيل الدخول -->
+        <div class="form-container">
+            <form method="POST" action="/headteacher_login" class="login-form">
+                <!-- المرحلة الدراسية -->
+                <label for="school_stage">School Stage</label>
+                <select id="school_stage" name="school_stage" class="form-control" required>
+                    <option value="" disabled selected>Select your school stage</option>
+                    <option value="Elementary">Elementary School</option>
+                    <option value="Middle">Middle School</option>
+                    <option value="High">High School</option>
+                </select>
+
+                <!-- كود المدير -->
+                <label for="headteacher_code">Your Code</label>
+                <input type="number" id="headteacher_code" name="headteacher_code" class="form-control" placeholder="Enter your code" required>
+
+                <!-- كلمة المرور -->
+                <label for="headteacher_password">Password</label>
+                <input type="password" id="headteacher_password" name="headteacher_password" class="form-control" placeholder="Enter your password" required>
+
+                <!-- رسالة الخطأ (إذا وُجدت) -->
+                {% if error %}
+                    <p class="error">{{ error }}</p>
+                {% endif %}
+
+                <!-- زر تسجيل الدخول -->
+                <button type="submit" class="login-btn">Log In</button>
+            </form>
+        </div>
+
+        <!-- رابط العودة -->
+        <a href="{{ url_for('index') }}" class="back-link">Back to Home</a>
+    </div>
+
+</body>
+</html>

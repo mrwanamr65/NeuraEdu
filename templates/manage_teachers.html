@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Teachers</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_teachers.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <h1 class="typewriter-text">Manage Teachers</h1>
+        
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <!-- Display Teachers -->
+        <div class="section">
+            <h2 class="section-title">Current Teachers</h2>
+            <div class="teachers-container">
+                {% if teachers %}
+                    <table class="teachers-table">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Accessible Classes</th>
+                                <th>Modify Classes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for teacher in teachers %}
+                                <tr>
+                                    <td>{{ teacher.code }}</td>
+                                    <td>{{ teacher.name }}</td>
+                                    <td>
+                                        <span id="classes-{{ teacher.code }}">{{ teacher.accessible_classes_str }}</span>
+                                    </td>
+                                    <td>
+                                        <form class="modify-classes-form" data-code="{{ teacher.code }}">
+                                            <input type="number" name="grade" min="1" placeholder="Grade" required style="width: 80px; padding: 5px; margin: 2px;">
+                                            <input type="number" name="number" min="1" placeholder="Class Number" required style="width: 80px; padding: 5px; margin: 2px;">
+                                            <button type="button" class="action-btn add-class-btn">Add</button>
+                                            <button type="button" class="action-btn remove-class-btn">Remove</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="no-teachers">No teachers available.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Add New Teacher -->
+        <div class="section">
+            <h2 class="section-title">Add New Teacher</h2>
+            <div class="form-container">
+                <form id="addTeacherForm" class="teacher-form">
+                    <label for="teacher_code">Teacher Code:</label>
+                    <input type="number" id="teacher_code" name="teacher_code" class="form-control" min="1" placeholder="Teacher Code" required>
+                    
+                    <label for="teacher_name">Teacher Name:</label>
+                    <input type="text" id="teacher_name" name="teacher_name" class="form-control" placeholder="Teacher Name" required>
+                    
+                    <label for="accessible_classes">Accessible Classes (comma-separated):</label>
+                    <input type="text" id="accessible_classes" name="accessible_classes" class="form-control" placeholder="e.g., class1_2,class1_3" required>
+                    
+                    <label for="teacher_password">Password:</label>
+                    <input type="password" id="teacher_password" name="teacher_password" class="form-control" placeholder="Password" required>
+                    
+                    <button type="submit" class="submit-btn">Add Teacher</button>
+                </form>
+                <div id="message" class="message"></div>
+            </div>
+        </div>
+        
+        <!-- back -->
+        <a href="{{ url_for('headteacher_dashboard_page', code='dummy', school_stage='dummy') }}" class="back-link">Back to dashboard</a>
+    </div>
+
+    <script>
+        // Add Teacher
+        document.getElementById('addTeacherForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const accessibleClassesInput = document.getElementById('accessible_classes').value;
+            const accessibleClasses = accessibleClassesInput.split(',').map(cls => cls.trim());
+            
+            const formData = new FormData(form);
+            formData.set('accessible_classes', JSON.stringify(accessibleClasses));
+            
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = '';
+
+            try {
+                const response = await fetch(`/add_teacher`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    messageDiv.textContent = result.message;
+                    setTimeout(() => location.reload(), 1000);
+                }
+            } catch (err) {}
+        });
+
+        // Modify Accessible Classes
+        document.querySelectorAll('.modify-classes-form').forEach(form => {
+            const teacherCode = form.getAttribute('data-code');
+            const classesSpan = document.getElementById(`classes-${teacherCode}`);
+
+            // Add Class
+            form.querySelector('.add-class-btn').addEventListener('click', async () => {
+                const grade = form.querySelector('input[name="grade"]').value;
+                const number = form.querySelector('input[name="number"]').value;
+                if (!grade || !number) {
+                    alert("Please enter both grade and class number.");
+                    return;
+                }
+                const className = `class${grade}_${number}`;
+                
+                let currentClasses = classesSpan.textContent && classesSpan.textContent !== "No classes" 
+                    ? classesSpan.textContent.split(', ').map(cls => cls.trim()) 
+                    : [];
+                if (currentClasses.includes(className)) {
+                    alert("Class already exists in accessible classes.");
+                    return;
+                }
+                currentClasses.push(className);
+                
+                try {
+                    const response = await fetch(`/update_teacher_classes`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ teacher_code: teacherCode, accessible_classes: JSON.stringify(currentClasses) })
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        classesSpan.textContent = currentClasses.length > 0 ? currentClasses.join(', ') : "No classes";
+                        alert(result.message);
+                    }
+                } catch (err) {}
+            });
+
+            // Remove Class
+            form.querySelector('.remove-class-btn').addEventListener('click', async () => {
+                const grade = form.querySelector('input[name="grade"]').value;
+                const number = form.querySelector('input[name="number"]').value;
+                if (!grade || !number) {
+                    alert("Please enter both grade and class number.");
+                    return;
+                }
+                const className = `class${grade}_${number}`;
+                
+                let currentClasses = classesSpan.textContent && classesSpan.textContent !== "No classes" 
+                    ? classesSpan.textContent.split(', ').map(cls => cls.trim()) 
+                    : [];
+                if (!currentClasses.includes(className)) {
+                    alert("Class not found in accessible classes.");
+                    return;
+                }
+                currentClasses = currentClasses.filter(cls => cls !== className);
+                
+                try {
+                    const response = await fetch(`/update_teacher_classes`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ teacher_code: teacherCode, accessible_classes: JSON.stringify(currentClasses) })
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        classesSpan.textContent = currentClasses.length > 0 ? currentClasses.join(', ') : "No classes";
+                        alert(result.message);
+                    }
+                } catch (err) {}
+            });
+        });
+    </script>
+</body>
+</html>

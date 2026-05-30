@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/teacher.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <!-- الدوائر المتحركة -->
+    <div class="floating-circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+    <!-- النجوم المتلألئة -->
+    <div class="stars">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Welcome, Teacher!</h1>
+            <p class="description">Please fill in the form below to log in:</p>
+        </div>
+
+        <!-- عرض رسالة الخطأ إذا وجدت -->
+        {% if error %}
+            <p class="error-message">{{ error | safe }}</p>
+        {% endif %}
+
+        <!-- نموذج تسجيل دخول المعلم باستخدام WTForms -->
+        <form method="POST" action="{{ url_for('teacher_login') }}" class="login-form">
+            {{ form.hidden_tag() }} <!-- لمنع CSRF -->
+
+            <!-- قائمة منسدلة لاختيار المرحلة الدراسية -->
+            <div class="form-group">
+                <label for="{{ form.school_stage.id }}">Select your school stage:</label>
+                {{ form.school_stage(class="form-input") }}
+                {% if form.school_stage.errors %}
+                    <div class="error-text">
+                        {% for error in form.school_stage.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- إدخال كود المعلم -->
+            <div class="form-group">
+                <label for="{{ form.teacher_code.id }}">Enter your code:</label>
+                {{ form.teacher_code(class="form-input", type="number") }}
+                {% if form.teacher_code.errors %}
+                    <div class="error-text">
+                        {% for error in form.teacher_code.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- إدخال كلمة المرور -->
+            <div class="form-group">
+                <label for="{{ form.teacher_password.id }}">Enter your password:</label>
+                {{ form.teacher_password(class="form-input") }}
+                {% if form.teacher_password.errors %}
+                    <div class="error-text">
+                        {% for error in form.teacher_password.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- زر الإرسال -->
+            {{ form.submit(class="submit-btn") }}
+        </form>
+
+        <!-- رابط العودة إلى الصفحة الرئيسية -->
+        <a href="{{ url_for('index') }}" class="back-link">Go back to home</a>
+    </div>
+
+    <script>
+        // إضافة فئة focused عند التركيز على الحقول
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('focused');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.classList.remove('focused');
+            });
+        });
+    </script>
+</body>
+</html>

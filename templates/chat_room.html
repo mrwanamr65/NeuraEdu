@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat_room.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <!-- العناصر العائمة -->
+    <div class="background-animation">
+        <div class="floating-icon"><i class="fas fa-comment"></i></div>
+        <div class="floating-icon"><i class="fas fa-users"></i></div>
+        <div class="floating-icon"><i class="fas fa-envelope"></i></div>
+        <div class="floating-icon"><i class="fas fa-comments"></i></div>
+        <div class="floating-icon"><i class="fas fa-message"></i></div>
+        <div class="floating-icon"><i class="fas fa-user-friends"></i></div>
+        <div class="floating-icon"><i class="fas fa-paper-plane"></i></div>
+        <div class="floating-icon"><i class="fas fa-chat"></i></div>
+    </div>
+
+    <div class="header" 
+         data-current-user-id="{{ current_user_id|default(0)|string }}" 
+         data-contact-code="{{ contact_code|default('')|string }}" 
+         data-contact-type="{{ contact_type|default('')|string }}">
+        <a href="{{ url_for('chats') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <h2>{{ contact_name|default('Unknown Contact') }} (Code: {{ contact_code|default('N/A') }})</h2>
+    </div>
+    
+    <div class="chat-container" id="chat-container">
+        <!-- Messages will be loaded here dynamically -->
+    </div>
+    
+    <div class="input-container">
+        <div id="error-message" class="error-message" style="display: none;"></div>
+        <div id="reply-preview">
+            <span id="reply-text"></span>
+            <span class="close-reply" onclick="clearReply()">×</span>
+        </div>
+        <div id="input-form">
+            <input type="text" id="message-input" placeholder="Type a message...">
+            <button id="send-btn">
+                <i class="fas fa-paper-plane"></i> Send
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Ensure DOM is fully loaded before binding event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded');
+
+            // Retrieve variables from data attributes
+            const header = document.querySelector('.header');
+            const currentUserId = parseInt(header.dataset.currentUserId) || null;
+            const contactCode = header.dataset.contactCode || null;
+            const contactType = header.dataset.contactType || null;
+            let selectedReplyId = null;
+            let messages = [];
+            let lastMessageId = 0; // Track the last message ID to detect new messages
+            let isProcessing = false; // Flag to prevent concurrent processing
+
+            // Validate initial variables
+            if (!currentUserId || !contactCode || !contactType || contactCode.trim() === '' || contactType.trim() === '') {
+                console.error('Missing or invalid session data:', { currentUserId, contactCode, contactType });
+                document.getElementById('chat-container').innerHTML = '<p class="error-message">Error: Invalid contact selected.</p>';
+                document.getElementById('input-form').style.display = 'none';
+                document.getElementById('error-message').textContent = 'Invalid contact selected. Please return to chats.';
+                document.getElementById('error-message').style.display = 'block';
+                return;
+            }
+
+            // Validate contactType
+            const validTypes = ['student', 'teacher', 'headteacher', 'parent'];
+            if (!validTypes.includes(contactType)) {
+                console.error('Invalid contact type:', contactType);
+                document.getElementById('chat-container').innerHTML = '<p class="error-message">Error: Invalid contact type.</p>';
+                document.getElementById('input-form').style.display = 'none';
+                document.getElementById('error-message').textContent = 'Invalid contact type. Please return to chats.';
+                document.getElementById('error-message').style.display = 'block';
+                return;
+            }
+
+            // Check if send button and input exist
+            const sendButton = document.getElementById('send-btn');
+            const messageInput = document.getElementById('message-input');
+            if (!sendButton || !messageInput) {
+                console.error('Send button or input not found in DOM');
+                document.getElementById('chat-container').innerHTML = '<p class="error-message">Error: Form elements not found.</p>';
+                document.getElementById('input-form').style.display = 'none';
+                document.getElementById('error-message').textContent = 'Form error. Please try again.';
+                document.getElementById('error-message').style.display = 'block';
+                return;
+            }
+
+            // Show error message in UI
+            function showError(message) {
+                const errorDiv = document.getElementById('error-message');
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 5000); // Hide after 5 seconds
+            }
+
+            // Fetch messages from the server
+            function loadMessages() {
+                if (isProcessing) return; // Prevent concurrent requests
+                isProcessing = true;
+                
+                console.log('Fetching messages for:', { contactCode, contactType });
+                fetch(`/get_messages/${encodeURIComponent(contactCode)}/${encodeURIComponent(contactType)}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error fetching messages:', data.error);
+                        showError(`Error fetching messages: ${data.error}`);
+                        return;
+                    }
+                    
+                    const newMessages = data.messages || [];
+                    
+                    // Check if there are new messages
+                    if (newMessages.length > 0) {
+                        const latestMessageId = Math.max(...newMessages.map(m => m.id));
+                        
+                        if (latestMessageId > lastMessageId) {
+                            // Update last message ID
+                            lastMessageId = latestMessageId;
+                            
+                            // Only update if there are new messages
+                            if (messages.length === 0 || JSON.stringify(messages) !== JSON.stringify(newMessages)) {
+                                messages = newMessages;
+                                renderMessages();
+                            }
+                        }
+                    } else if (messages.length > 0) {
+                        // No messages but we had messages before
+                        messages = [];
+                        renderMessages();
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    // Don't show error for periodic updates to avoid annoying the user
+                })
+                .finally(() => {
+                    isProcessing = false;
+                });
+            }
+
+            // Create a message element
+            function createMessageElement(msg) {
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('message', msg.sender_id === currentUserId ? 'sent' : 'received', 'new-message');
+                msgDiv.dataset.id = msg.id;
+
+                if (msg.reply_to_message_id) {
+                    const replyDiv = document.createElement('div');
+                    replyDiv.classList.add('reply');
+                    const repliedMsg = messages.find(m => m.id === parseInt(msg.reply_to_message_id));
+                    replyDiv.textContent = repliedMsg ? `Reply to: ${repliedMsg.message}` : 'Reply to: (Message not found)';
+                    msgDiv.appendChild(replyDiv);
+                }
+
+                const textDiv = document.createElement('div');
+                textDiv.textContent = msg.message;
+                msgDiv.appendChild(textDiv);
+
+                const timeDiv = document.createElement('div');
+                timeDiv.classList.add('timestamp');
+                timeDiv.textContent = new Date(msg.created_at).toLocaleString('en-US', {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true
+                });
+                msgDiv.appendChild(timeDiv);
+
+                msgDiv.addEventListener('dblclick', () => {
+                    selectedReplyId = msg.id;
+                    const replyPreview = document.getElementById('reply-preview');
+                    const replyText = document.getElementById('reply-text');
+                    replyPreview.style.display = 'block';
+                    replyText.textContent = `Replying to: ${msg.message}`;
+                });
+
+                return msgDiv;
+            }
+
+            // Render messages - optimized for performance
+            function renderMessages() {
+                const container = document.getElementById('chat-container');
+                
+                // If no messages, show placeholder
+                if (messages.length === 0) {
+                    container.innerHTML = '<p class="error-message">No messages yet.</p>';
+                    return;
+                }
+                
+                // Get current message IDs to detect which are new
+                const currentMessageElements = container.querySelectorAll('.message');
+                const currentMessageIds = Array.from(currentMessageElements)
+                    .map(el => parseInt(el.dataset.id))
+                    .filter(id => !isNaN(id));
+                
+                // Create a map of existing messages for quick lookup
+                const existingMessagesMap = {};
+                currentMessageElements.forEach(el => {
+                    existingMessagesMap[el.dataset.id] = el;
+                });
+                
+                // Add or update messages efficiently
+                const fragment = document.createDocumentFragment();
+                let hasNewMessages = false;
+                let shouldScroll = false;
+                
+                messages.forEach(msg => {
+                    let msgElement = existingMessagesMap[msg.id];
+                    
+                    if (!msgElement) {
+                        // Create new message element
+                        msgElement = createMessageElement(msg);
+                        fragment.appendChild(msgElement);
+                        hasNewMessages = true;
+                        
+                        // Check if we should scroll to bottom (if already near bottom)
+                        const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+                        if (isNearBottom) {
+                            shouldScroll = true;
+                        }
+                    }
+                });
+                
+                // Append all new messages at once
+                if (hasNewMessages) {
+                    container.appendChild(fragment);
+                }
+                
+                // Remove any messages that are no longer in the list
+                currentMessageElements.forEach(msgEl => {
+                    const msgId = parseInt(msgEl.dataset.id);
+                    if (!messages.some(msg => msg.id === msgId)) {
+                        msgEl.remove();
+                    }
+                });
+                
+                // Scroll to bottom if new messages were added and we're near the bottom
+                if (shouldScroll) {
+                    container.scrollTop = container.scrollHeight;
+                }
+            }
+
+            // Send message - optimized version
+            function sendMessage() {
+                console.log('Send button clicked');
+                const message = messageInput.value.trim();
+                if (!message) {
+                    console.log('No message entered, skipping send.');
+                    showError('Please enter a message.');
+                    return;
+                }
+
+                const payload = {
+                    receiver_id: contactCode,
+                    receiver_type: contactType,
+                    message: message,
+                    reply_to_message_id: selectedReplyId
+                };
+
+                console.log('Sending message with payload:', payload);
+
+                // Disable send button during request
+                sendButton.disabled = true;
+                sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+                fetch('/send_message', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error sending message:', data.error);
+                        showError(`Error sending message: ${data.error}`);
+                        return;
+                    }
+                    console.log('Message sent successfully:', data);
+                    messageInput.value = '';
+                    clearReply();
+                    
+                    // Force reload messages after sending
+                    lastMessageId = 0;
+                    loadMessages();
+                })
+                .catch(error => {
+                    console.error('Send error:', error);
+                    showError('Error sending message.');
+                })
+                .finally(() => {
+                    // Re-enable send button
+                    sendButton.disabled = false;
+                    sendButton.innerHTML = '<i class="fas fa-paper-plane"></i> Send';
+                });
+            }
+
+            // Clear reply preview
+            function clearReply() {
+                selectedReplyId = null;
+                const replyPreview = document.getElementById('reply-preview');
+                replyPreview.style.display = 'none';
+                replyPreview.querySelector('#reply-text').textContent = '';
+            }
+
+            // Set up event listeners
+            sendButton.addEventListener('click', sendMessage);
+            
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // Automatic message polling with optimized timing
+            setInterval(loadMessages, 2000);
+
+            // Load messages on page load
+            loadMessages();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Evaluation - {{ student_name | default('Unknown') | safe }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add_evaluation.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- التحقق من الجلسة -->
+        {% if session['user_type'] == 'teacher' and session['teacher_code'] and session['school_stage'] %}
+            <h1>Add Evaluation for {{ student_name | default('Unknown') | safe }} (Code: {{ student_code | safe }})</h1>
+
+            <!-- عرض رسالة النجاح أو الخطأ -->
+            {% if message %}
+                <p class="success" style="color: green;">{{ message | safe }}</p>
+            {% endif %}
+            {% if error %}
+                <p class="error" style="color: red;">{{ error | safe }}</p>
+            {% endif %}
+
+            <!-- نموذج إضافة التقييم -->
+            <form method="POST" action="{{ url_for('add_evaluation', class_name=class_name, school=school, student_code=student_code, teacher_code=teacher_code) }}">
+                <div class="form-group">
+                    <label for="evaluation">Evaluation</label>
+                    <input type="text" name="evaluation" id="evaluation" class="form-control" placeholder="Enter evaluation (e.g., grade)" required>
+                </div>
+                <div class="form-group">
+                    <label for="note">Note</label>
+                    <textarea name="note" id="note" class="form-control" placeholder="Enter additional notes"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Evaluation</button>
+            </form>
+
+            <!-- عرض التقييمات الحالية -->
+            {% if evaluations %}
+                <h2>Previous Evaluations</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Evaluation</th>
+                            <th>Note</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for eval in evaluations %}
+                        <tr>
+                            <td>{{ eval.date | safe }}</td>
+                            <td>{{ eval.evaluation | safe }}</td>
+                            <td>{{ eval.note | safe }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('delete_evaluation_route') }}" onsubmit="return confirm('Are you sure you want to delete this evaluation?');">
+                                    <input type="hidden" name="class_name" value="{{ class_name | safe }}">
+                                    <input type="hidden" name="school" value="{{ school | safe }}">
+                                    <input type="hidden" name="evaluation_id" value="{{ eval.id | safe }}">
+                                    <input type="hidden" name="student_code" value="{{ student_code | safe }}">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No previous evaluations available.</p>
+            {% endif %}
+        {% else %}
+            <p class="error" style="color: red;">Unauthorized access. Please log in as a teacher.</p>
+        {% endif %}
+
+        <!-- رابط العودة إلى الداشبورد -->
+        {% if session['user_type'] == 'teacher' %}
+        <a href="{{ url_for('teacher_dashboard') }}" class="back-link">Back to Dashboard</a>
+        {% endif %}
+
+    </div>
+</body>
+</html>

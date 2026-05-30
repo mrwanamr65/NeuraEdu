@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/browse_videos.css') }}">
+    <title>Browse Videos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <h1 class="typewriter-text">Browse Videos - {{ stage }} School</h1>
+        
+        <!-- روابط التنقل باستخدام url_for وبدون تمرير stage يدويًا -->
+        <div class="nav-links">
+            <a href="{{ url_for('manage_subjects') }}">Manage Subjects</a>
+            <a href="{{ url_for('assign_teachers_to_subjects') }}">Assign Teachers</a>
+            <a href="{{ url_for('headteacher_dashboard_page') }}">Back to Dashboard</a>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Select Class</h2>
+            <!-- إزالة input stage المخفي لأن stage تؤخذ من session -->
+            <form method="get">
+                <div class="form-group">
+                    <label for="class_name">Class:</label>
+                    <select id="class_name" name="class_name" class="form-control" required>
+                        <option value="">-- Select Class --</option>
+                        {% for class in class_names %}
+                            <option value="{{ class }}" {% if class == selected_class %}selected{% endif %}>{{ class }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" value="Show Videos" class="btn">
+            </form>
+        </div>
+
+        {% if selected_class %}
+        <div class="section">
+            <h2 class="section-title">Videos for Class: {{ selected_class }}</h2>
+            {% if videos_by_subject %}
+                {% for subject, videos in videos_by_subject.items() %}
+                    <h3 class="subject-title">Subject: {{ subject }}</h3>
+                    {% if videos %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Link</th>
+                                    <th>Preview</th>
+                                    <th>ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for video in videos %}
+                                    <tr>
+                                        <td>{{ video.title }}</td>
+                                        <td><a href="{{ video.link }}" target="_blank">{{ video.link }}</a></td>
+                                        <td>
+                                            {% if 'youtube.com' in video.link or 'youtu.be' in video.link %}
+                                                <!-- Extract YouTube video ID correctly -->
+                                                {% set video_id = (video.link.split('v=') | last).split('&') | first if 'v=' in video.link else (video.link.split('/') | last).split('?') | first %}
+                                                <div class="video-preview-container">
+                                                    <iframe class="video-preview" src="https://www.youtube.com/embed/{{ video_id }}" allowfullscreen></iframe>
+                                                </div>
+                                            {% else %}
+                                                <div class="video-preview-container">
+                                                    <div class="video-preview unavailable">
+                                                        <em>Preview not available</em>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ video.id }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="no-students">No videos found for this subject in this class.</p>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <p class="no-students">No videos found for class {{ selected_class }}.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

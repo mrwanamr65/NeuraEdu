@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluate Students - {{ class_name | safe }}</title>
+    <!-- ربط ملف CSS الخاص بك -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/evaluate_class.css') }}">
+    <!-- خط Cairo للدعم الجيد للغة العربية والإنجليزية -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+    </div>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="container">
+
+        <!-- تحقق من الجلسة -->
+        {% if session['user_type'] == 'teacher' and session['teacher_code'] and session['school_stage'] %}
+
+            <!-- عنوان بتأثير الكتابة -->
+            <h1 class="typewriter-text">Evaluate Students</h1>
+
+            <!-- قسم الجدول -->
+            <div class="section">
+                <h2 class="section-title">Students in {{ class_name | safe }}</h2>
+
+                {% if students and students.items() %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Code</th>
+                                <th>Student Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for code, name in students.items() %}
+                                <tr>
+                                    <td>{{ code | safe }}</td>
+                                    <td>{{ name | safe }}</td>
+                                    <td>
+                                        <a href="{{ url_for('add_evaluation', class_name=class_name, school=school, student_code=code, teacher_code=teacher_code) }}" class="btn">
+                                            Add Evaluation
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="no-students">No students found in this class.</p>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <p class="no-students">Unauthorized access. Please log in as a teacher.</p>
+        {% endif %}
+
+        <!-- رابط العودة إلى الداشبورد -->
+        {% if session['user_type'] == 'teacher' %}
+            <a href="{{ url_for('teacher_dashboard') }}" class="back-link">Back to Dashboard</a>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Notifications - {{ student.name }}</title>
+    <!-- ربط ملف CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/parent_class_notifications.css') }}">
+    <!-- خط Cairo للدعم الجيد -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+    </div>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="container">
+
+        <!-- عنوان بتأثير الكتابة -->
+        <h1 class="typewriter-text">Class Notifications</h1>
+
+        <!-- معلومات الطالب -->
+        <p class="class-info">
+            For Student: <strong>{{ student.name }}</strong> | Class: {{ class_name }} | Stage: {{ school_stage }}
+        </p>
+
+        <!-- قسم الإشعارات -->
+        <div class="notifications-container">
+            <h2 class="section-title">Class Notifications</h2>
+
+            {% if class_notifications %}
+                <div class="notification-list">
+                    {% for notification in class_notifications %}
+                        <div class="notification-item">
+                            <div class="notification-title">{{ notification.title }}</div>
+                            <div class="notification-text">{{ notification.notification }}</div>
+                            {% if notification.notes %}
+                                <div class="notification-notes">Notes: {{ notification.notes }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-notifications">No class notifications found.</p>
+            {% endif %}
+        </div>
+
+        <!-- أزرار التنقل -->
+        <div class="actions">
+            <a href="{{ url_for('parent_dashboard') }}" class="back-link">Back to Dashboard</a>
+            <a href="{{ url_for('index') }}" class="logout-link">Logout</a>
+        </div>
+    </div>
+
+</body>
+</html>

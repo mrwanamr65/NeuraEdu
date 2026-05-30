@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول الطالب</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student.css') }}">
+</head>
+<body>
+    <!-- 🌌 خلفية الدوائر المتحركة -->
+    <div class="floating-circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+
+    <!-- ✨ خلفية النجوم -->
+    <div class="stars">
+        <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+    </div>
+
+    <!-- 📦 المحتوى الرئيسي -->
+    <div class="container">
+        <h1>Welcome, Student!</h1>
+        <p class="description">This is the student login page.</p>
+
+        {% if error %}
+            <div class="error-message">{{ error | safe }}</div>
+        {% endif %}
+
+        <form method="POST" action="/student_login" class="login-form">
+            {{ form.csrf_token }}
+            
+            <div class="form-group">
+                <label for="class">Select your school stage:</label>
+                {{ form.class_(id="class", class_="form-input", required=True) }}
+            </div>
+            
+            <div class="form-group">
+                <label for="student_grade">Enter your grade:</label>
+                {{ form.student_grade(id="student_grade", class_="form-input", required=True) }}
+            </div>
+            
+            <div class="form-group">
+                <label for="student_class_num">Enter your class number:</label>
+                {{ form.student_class_num(id="student_class_num", class_="form-input", required=True) }}
+            </div>
+            
+            <div class="form-group">
+                <label for="student_code">Enter your code:</label>
+                {{ form.student_code(id="student_code", class_="form-input", required=True) }}
+            </div>
+            
+            <div class="form-group">
+                <label for="student_password">Enter your password:</label>
+                {{ form.student_password(id="student_password", class_="form-input", required=True) }}
+            </div>
+            
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+
+        <a href="/" class="back-link">Go back to home</a>
+    </div>
+</body>
+</html>

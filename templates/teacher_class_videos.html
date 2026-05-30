@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Educational Videos - {{ class_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/teacher_class_videos.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <!-- الدوائر المتحركة -->
+    <div class="floating-circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+    <!-- النجوم المتلألئة -->
+    <div class="stars">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star special"></div> <!-- نجمة خاصة -->
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Educational Videos for Class {{ class_name | safe }}</h1>
+            <p class="subtitle">Select a video or add a new one for your students</p>
+        </div>
+
+        <!-- التحقق من الجلسة -->
+        {% if session['user_type'] == 'teacher' and session['teacher_code'] and session['school_stage'] %}
+            <!-- قائمة المواد -->
+            <div class="subjects-container">
+                {% for subject, videos in videos_by_subject.items() %}
+                    <div class="subject-box">
+                        <h2 class="subject-title">{{ subject | capitalize | safe }}</h2>
+                        {% if videos %}
+                            {% for video in videos %}
+                                <div class="video-row">
+                                    <a class="video-link" href="{{ video.link }}" target="_blank">
+                                        {{ video.title | safe }} (Video #{{ video.id }})
+                                    </a>
+                                    {% if subject.strip().lower() in editable_subjects %}
+                                        <form method="POST" action="{{ url_for('delete_video_route') }}">
+                                            <input type="hidden" name="class_name" value="{{ class_name | safe }}">
+                                            <input type="hidden" name="video_id" value="{{ video.id }}">
+                                            <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this video?');">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            {% if subject.strip().lower() in editable_subjects %}
+                                <form method="POST" action="{{ url_for('add_video_route') }}">
+                                    <input type="hidden" name="class_name" value="{{ class_name | safe }}">
+                                    <input type="hidden" name="subject" value="{{ subject | safe }}">
+                                    <input type="text" name="title" placeholder="Video Title" required>
+                                    <input type="url" name="link" placeholder="Video Link" required>
+                                    <button type="submit" class="add-btn">
+                                        <i class="fas fa-plus"></i> Add Video
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% else %}
+                            <p class="no-videos">No videos available for this subject.</p>
+                            {% if subject.strip().lower() in editable_subjects %}
+                                <form method="POST" action="{{ url_for('add_video_route') }}">
+                                    <input type="hidden" name="class_name" value="{{ class_name | safe }}">
+                                    <input type="hidden" name="subject" value="{{ subject | safe }}">
+                                    <input type="text" name="title" placeholder="Video Title" required>
+                                    <input type="url" name="link" placeholder="Video Link" required>
+                                    <button type="submit" class="add-btn">
+                                        <i class="fas fa-plus"></i> Add Video
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% if not videos_by_subject %}
+                    <p class="no-videos">No educational videos available for this class.</p>
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="error">Unauthorized access. Please log in as a teacher.</p>
+        {% endif %}
+
+        <!-- رابط العودة -->
+        {% if session['user_type'] == 'teacher' %}
+            <a href="{{ url_for('teacher_dashboard') }}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        {% endif %}
+
+        <!-- إشعار منبثق -->
+        <div class="notification" id="notification"></div>
+    </div>
+
+    <script>
+        // JavaScript لتفعيل الإشعارات
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // إظهار إشعار إذا وجد
+        const flashMessage = "{{ flash_message | safe | tojson }}";
+        if (flashMessage) {
+            showNotification(JSON.parse(flashMessage));
+        }
+    </script>
+</body>
+</html>

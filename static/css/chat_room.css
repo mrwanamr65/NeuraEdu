@@ -1,0 +1,731 @@
+/* نظام ألوان متجانس مع تأثيرات متطورة */
+:root {
+    /* نظام الألوان من الكود الأول */
+    --bg-dark: #0b0f17;
+    --bg-gradient: linear-gradient(135deg, #0b0f17 0%, #1a2236 100%);
+    --fg-light: #e9eef9;
+    --accent-primary: #00d4ff;
+    --accent-secondary: #0099cc;
+    --accent-tertiary: #0066cc;
+    --accent-success: #00d4ff;
+    --accent-warning: #0099cc;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.6);
+    --border-radius: 16px;
+    --transition: all 0.3s ease;
+    --circle-1: rgba(0, 212, 255, 0.15);
+    --circle-2: rgba(0, 153, 204, 0.1);
+    --circle-3: rgba(0, 102, 204, 0.08);
+    
+    /* نظام الألوان من الكود الثاني */
+    --primary-dark: #1A5276;
+    --primary-color: #2874A6;
+    --secondary-color: #3498DB;
+    --accent-color: #2ECC71;
+    --accent-light: #58D68D;
+    --light-color: #F8F9F9;
+    --light-gray: #EAECEE;
+    --text-color: #2C3E50;
+    --text-light: #566573;
+    --success-color: #27AE60;
+    --warning-color: #E67E22;
+    --danger-color: #E74C3C;
+    --white: #FFFFFF;
+    --gradient-primary: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-color) 100%);
+    --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-light) 100%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: var(--bg-gradient);
+    color: var(--fg-light);
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 🔵 دوائر الخلفية المتحركة */
+.circles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.circles div {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(5px);
+    animation: float 25s infinite linear;
+    opacity: 0.5;
+}
+
+.circles div:nth-child(1) {
+    width: 80px;
+    height: 80px;
+    background: var(--circle-1);
+    top: 10%;
+    left: 10%;
+    animation-duration: 25s;
+    animation-delay: 0s;
+}
+
+.circles div:nth-child(2) {
+    width: 120px;
+    height: 120px;
+    background: var(--circle-2);
+    top: 70%;
+    left: 80%;
+    animation-duration: 35s;
+    animation-delay: 5s;
+}
+
+.circles div:nth-child(3) {
+    width: 60px;
+    height: 60px;
+    background: var(--circle-3);
+    top: 30%;
+    left: 75%;
+    animation-duration: 20s;
+    animation-delay: 2s;
+}
+
+.circles div:nth-child(4) {
+    width: 100px;
+    height: 100px;
+    background: var(--circle-1);
+    top: 60%;
+    left: 15%;
+    animation-duration: 40s;
+    animation-delay: 7s;
+}
+
+.circles div:nth-child(5) {
+    width: 70px;
+    height: 70px;
+    background: var(--circle-2);
+    top: 20%;
+    left: 50%;
+    animation-duration: 30s;
+    animation-delay: 3s;
+}
+
+.circles div:nth-child(6) {
+    width: 90px;
+    height: 90px;
+    background: var(--circle-3);
+    top: 80%;
+    left: 40%;
+    animation-duration: 28s;
+    animation-delay: 6s;
+}
+
+.circles div:nth-child(7) {
+    width: 50px;
+    height: 50px;
+    background: var(--circle-1);
+    top: 40%;
+    left: 5%;
+    animation-duration: 22s;
+    animation-delay: 4s;
+}
+
+.circles div:nth-child(8) {
+    width: 110px;
+    height: 110px;
+    background: var(--circle-2);
+    top: 5%;
+    left: 65%;
+    animation-duration: 38s;
+    animation-delay: 1s;
+}
+
+.circles div:nth-child(9) {
+    width: 40px;
+    height: 40px;
+    background: var(--circle-3);
+    top: 85%;
+    left: 25%;
+    animation-duration: 32s;
+    animation-delay: 2s;
+}
+
+.circles div:nth-child(10) {
+    width: 130px;
+    height: 130px;
+    background: var(--circle-1);
+    top: 15%;
+    left: 85%;
+    animation-duration: 45s;
+    animation-delay: 8s;
+}
+
+/* 🔭 النجوم المتلألئة في الخلفية */
+.stars-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.star {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: twinkle linear infinite;
+}
+
+.star:nth-child(1) {
+    width: 1px;
+    height: 1px;
+    top: 15%;
+    left: 20%;
+    animation-duration: 3s;
+    animation-delay: 0s;
+}
+
+.star:nth-child(2) {
+    width: 2px;
+    height: 2px;
+    top: 25%;
+    left: 80%;
+    animation-duration: 4s;
+    animation-delay: 1s;
+}
+
+.star:nth-child(3) {
+    width: 1px;
+    height: 1px;
+    top: 40%;
+    left: 40%;
+    animation-duration: 5s;
+    animation-delay: 0.5s;
+}
+
+.star:nth-child(4) {
+    width: 3px;
+    height: 3px;
+    top: 60%;
+    left: 60%;
+    animation-duration: 6s;
+    animation-delay: 2s;
+}
+
+.star:nth-child(5) {
+    width: 2px;
+    height: 2px;
+    top: 75%;
+    left: 25%;
+    animation-duration: 7s;
+    animation-delay: 1.5s;
+}
+
+.star:nth-child(6) {
+    width: 1px;
+    height: 1px;
+    top: 85%;
+    left: 75%;
+    animation-duration: 4s;
+    animation-delay: 3s;
+}
+
+.star:nth-child(7) {
+    width: 2px;
+    height: 2px;
+    top: 35%;
+    left: 10%;
+    animation-duration: 5s;
+    animation-delay: 0.7s;
+}
+
+.star:nth-child(8) {
+    width: 3px;
+    height: 3px;
+    top: 50%;
+    left: 90%;
+    animation-duration: 8s;
+    animation-delay: 2.5s;
+}
+
+.star:nth-child(9) {
+    width: 1px;
+    height: 1px;
+    top: 20%;
+    left: 50%;
+    animation-duration: 6s;
+    animation-delay: 1.2s;
+}
+
+.star:nth-child(10) {
+    width: 2px;
+    height: 2px;
+    top: 65%;
+    left: 30%;
+    animation-duration: 5s;
+    animation-delay: 0.3s;
+}
+
+.star:nth-child(11) {
+    width: 1px;
+    height: 1px;
+    top: 45%;
+    left: 15%;
+    animation-duration: 4s;
+    animation-delay: 2s;
+}
+
+.star:nth-child(12) {
+    width: 2px;
+    height: 2px;
+    top: 30%;
+    left: 70%;
+    animation-duration: 7s;
+    animation-delay: 1.7s;
+}
+
+.star:nth-child(13) {
+    width: 1px;
+    height: 1px;
+    top: 55%;
+    left: 85%;
+    animation-duration: 6s;
+    animation-delay: 0.9s;
+}
+
+.star:nth-child(14) {
+    width: 3px;
+    height: 3px;
+    top: 70%;
+    left: 45%;
+    animation-duration: 8s;
+    animation-delay: 3.2s;
+}
+
+.star:nth-child(15) {
+    width: 2px;
+    height: 2px;
+    top: 10%;
+    left: 35%;
+    animation-duration: 7s;
+    animation-delay: 2.8s;
+}
+
+/* خلفية متحركة مع عناصر تعليمية */
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    opacity: 0.03;
+}
+
+.floating-icon {
+    position: absolute;
+    color: var(--accent-primary);
+    font-size: 2.5rem;
+    animation: float 25s infinite ease-in-out;
+    opacity: 0.7;
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
+}
+
+.floating-icon:nth-child(1) {
+    top: 10%;
+    left: 5%;
+    animation-delay: 0s;
+    animation-duration: 30s;
+}
+
+.floating-icon:nth-child(2) {
+    top: 20%;
+    right: 15%;
+    animation-delay: 3s;
+    animation-duration: 25s;
+}
+
+.floating-icon:nth-child(3) {
+    top: 60%;
+    left: 10%;
+    animation-delay: 6s;
+    animation-duration: 28s;
+}
+
+.floating-icon:nth-child(4) {
+    top: 40%;
+    right: 5%;
+    animation-delay: 9s;
+    animation-duration: 22s;
+}
+
+.floating-icon:nth-child(5) {
+    top: 80%;
+    right: 20%;
+    animation-delay: 12s;
+    animation-duration: 32s;
+}
+
+.floating-icon:nth-child(6) {
+    top: 30%;
+    left: 20%;
+    animation-delay: 15s;
+    animation-duration: 26s;
+}
+
+.floating-icon:nth-child(7) {
+    top: 70%;
+    right: 30%;
+    animation-delay: 18s;
+    animation-duration: 24s;
+}
+
+.floating-icon:nth-child(8) {
+    top: 15%;
+    left: 30%;
+    animation-delay: 21s;
+    animation-duration: 29s;
+}
+
+/* Header */
+.header {
+    background: var(--gradient-primary);
+    color: var(--fg-light);
+    padding: 15px;
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.back-link {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--fg-light);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-50%) translateX(-5px);
+}
+
+/* Chat Container */
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 80px 15px 100px 15px;
+    background: rgba(13, 19, 33, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+/* Messages */
+.message {
+    margin: 15px;
+    padding: 15px;
+    border-radius: 18px;
+    max-width: 70%;
+    position: relative;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.message.new-message {
+    animation: messageSlideIn 0.4s ease-out;
+}
+
+.sent {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    align-self: flex-end;
+    margin-left: auto;
+    color: var(--bg-dark);
+}
+
+.received {
+    background: rgba(255, 255, 255, 0.15);
+    align-self: flex-start;
+    margin-right: auto;
+    color: var(--fg-light);
+}
+
+.reply {
+    background-color: rgba(255, 255, 255, 0.1);
+    margin-bottom: 8px;
+    padding: 8px;
+    border-left: 3px solid var(--accent-primary);
+    font-style: italic;
+    font-size: 0.9em;
+    border-radius: 8px;
+}
+
+.timestamp {
+    font-size: 0.75em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 8px;
+    text-align: right;
+}
+
+.sent .timestamp {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+/* Input Container */
+.input-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: rgba(13, 19, 33, 0.8);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    backdrop-filter: blur(15px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+#reply-preview {
+    display: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    position: relative;
+    font-size: 0.9em;
+    border-left: 3px solid var(--accent-primary);
+}
+
+#reply-preview .close-reply {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    color: var(--danger-color);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+#input-form {
+    display: flex;
+    gap: 10px;
+}
+
+#message-input {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1em;
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--fg-light);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+#message-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+    border-color: var(--accent-primary);
+}
+
+#message-input::placeholder {
+    color: rgba(233, 238, 249, 0.7);
+}
+
+#send-btn {
+    background: var(--gradient-accent);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#send-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Error Message */
+.error-message {
+    color: var(--danger-color);
+    text-align: center;
+    padding: 12px;
+    background-color: rgba(231, 76, 60, 0.15);
+    border-radius: 8px;
+    margin: 10px;
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    backdrop-filter: blur(5px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.98) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate(20px, 20px) rotate(90deg);
+    }
+    50% {
+        transform: translate(0, 40px) rotate(180deg);
+    }
+    75% {
+        transform: translate(-20px, 20px) rotate(270deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
+
+@keyframes twinkle {
+    0%, 100% { 
+        opacity: 0.2; 
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.2);
+    }
+}
+
+@keyframes slideInFromTop {
+    from { 
+        opacity: 0; 
+        transform: translateY(-40px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* تحسينات للعرض على الجوال */
+@media (max-width: 768px) {
+    .header {
+        padding: 12px;
+    }
+    
+    .header h2 {
+        font-size: 1.2rem;
+        padding: 0 40px;
+    }
+    
+    .back-link {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .chat-container {
+        padding: 70px 10px 90px 10px;
+    }
+    
+    .message {
+        margin: 10px;
+        padding: 12px;
+        max-width: 85%;
+    }
+    
+    .input-container {
+        padding: 12px;
+    }
+    
+    #message-input {
+        padding: 10px 16px;
+    }
+    
+    #send-btn {
+        padding: 10px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .message {
+        max-width: 90%;
+    }
+    
+    #input-form {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    #send-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

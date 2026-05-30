@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education Admin Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/education_admin.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <!-- الدوائر المتحركة -->
+    <div class="floating-circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+    <!-- النجوم المتلألئة -->
+    <div class="stars">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Education Admin Login</h1>
+            <p class="description">Select your school stage and enter your credentials:</p>
+        </div>
+
+        <!-- عرض رسالة الخطأ -->
+        {% if error %}
+            <p class="error-message">{{ error | safe }}</p>
+        {% endif %}
+
+        <!-- نموذج تسجيل الدخول -->
+        <form method="POST" action="{{ url_for('education_admin_login') }}" class="login-form">
+            {{ form.hidden_tag() }}
+
+            <!-- اختيار المرحلة الدراسية -->
+            <div class="form-group">
+                <label for="{{ form.school_stage.id }}">School Stage:</label>
+                {{ form.school_stage(class="form-input") }}
+                {% if form.school_stage.errors %}
+                    <div class="error-text">
+                        {% for error in form.school_stage.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- كود الإدارة -->
+            <div class="form-group">
+                <label for="{{ form.admin_code.id }}">Admin Code:</label>
+                {{ form.admin_code(class="form-input", type="number") }}
+                {% if form.admin_code.errors %}
+                    <div class="error-text">
+                        {% for error in form.admin_code.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- كلمة المرور -->
+            <div class="form-group">
+                <label for="{{ form.admin_password.id }}">Password:</label>
+                {{ form.admin_password(class="form-input") }}
+                {% if form.admin_password.errors %}
+                    <div class="error-text">
+                        {% for error in form.admin_password.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- زر الإرسال -->
+            {{ form.submit(class="submit-btn") }}
+        </form>
+
+        <a href="{{ url_for('index') }}" class="back-link">Back to Home</a>
+    </div>
+
+    <script>
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('focused');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.classList.remove('focused');
+            });
+        });
+    </script>
+</body>
+</html>

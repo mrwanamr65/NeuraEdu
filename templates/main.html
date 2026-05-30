@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Your Role</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+  <!-- 🔭 النجوم -->
+  <div class="stars-container">
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+  </div>
+
+  <!-- 🔵 الدوائر المتحركة -->
+  <div class="circles">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+
+  <div class="container">
+    <div class="typewriter-container">
+      <h1 class="typewriter-text">Welcome to the Smart Learning System</h1>
+    </div>
+    <p class="gradient-subtitle">Please select your role:</p>
+    <p class="description">
+      Choose your role to access the right tools and resources.
+    </p>
+
+    <form method="POST" class="role-selection">
+      <button type="submit" name="user_type" value="student" class="btn student-btn">👩‍🎓 Student</button>
+      <button type="submit" name="user_type" value="teacher" class="btn teacher-btn">🧑‍🏫 Teacher</button>
+      <button type="submit" name="user_type" value="headteacher" class="btn headteacher-btn">🏫 Headteacher</button>
+      <button type="submit" name="user_type" value="parent" class="btn parent-btn">👪 Parent</button>
+      <button type="submit" name="user_type" value="education_admin" class="btn education-admin-btn">📊 Admin</button>
+    </form>
+
+
+  </div>
+</body>
+</html>

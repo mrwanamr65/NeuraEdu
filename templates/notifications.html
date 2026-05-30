@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notifications.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <h1 class="typewriter-text">Notifications Board</h1>
+        
+        <div class="actions">
+            <!-- رابط إضافة إشعار جديد -->
+            <a class="add-notification-btn" href="{{ url_for('add_notification', class_name=class_name) }}">
+                Add Notification
+            </a>
+        </div>
+        
+        <div class="notifications-container">
+            <div class="notification-list">
+                {% for notif in notifications %}
+                    <div class="notification-item">
+                        <div>
+                            <h3 class="notification-title">{{ notif.title }}</h3>
+                            <p class="notification-text"><strong>Notification:</strong> {{ notif.notification }}</p>
+                            <p class="notification-notes"><strong>Note:</strong> {{ notif.notes }}</p>
+                        </div>
+                        <!-- زرار الحذف -->
+                        <form method="POST" action="{{ url_for('delete_notification') }}" style="display:inline;">
+                            <input type="hidden" name="class_name" value="{{ class_name }}">
+                            <input type="hidden" name="notification_id" value="{{ notif.id }}">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if session['user_type'] == 'teacher' %}
+            <a href="{{ url_for('teacher_dashboard') }}" class="back-link">Back to Dashboard</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

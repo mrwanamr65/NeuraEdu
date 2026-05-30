@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Students</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_students.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <h1 class="typewriter-text">Manage Students</h1>
+        
+        <!-- Display Classes -->
+        <div class="classes-container">
+            <h2 class="section-title">Available Classes</h2>
+            {% if classes %}
+                <div class="classes-list">
+                    {% for class in classes %}
+                        <a href="{{ url_for('student_details') }}?class_name={{ class }}" class="class-link">{{ class }}</a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-classes">No classes available.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Add New Student -->
+        <div class="form-container">
+            <h2 class="section-title">Add New Student</h2>
+            <form id="addStudentForm" class="student-form" enctype="multipart/form-data">
+                <label for="student_code">Student Code:</label>
+                <input type="number" id="student_code" name="student_code" class="form-control" min="1" placeholder="Student Code" required>
+                
+                <label for="class_name">Class:</label>
+                <select id="class_name" name="class_name" class="form-control" required>
+                    <option value="" disabled selected>Select Class</option>
+                    {% for class in classes %}
+                        <option value="{{ class }}">{{ class }}</option>
+                    {% endfor %}
+                </select>
+                
+                <label for="student_name">Student Name:</label>
+                <input type="text" id="student_name" name="student_name" class="form-control" placeholder="Student Name" required>
+                
+                <label for="student_age">Student Age:</label>
+                <input type="number" id="student_age" name="student_age" class="form-control" min="1" placeholder="Student Age" required>
+                
+                <label for="password">Student Password:</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Student Password" required>
+                
+                <h3>Parent Information</h3>
+                <label for="parent_name">Parent Name:</label>
+                <input type="text" id="parent_name" name="parent_name" class="form-control" placeholder="Parent Name" required>
+                
+                <label for="parent_password">Parent Password:</label>
+                <input type="password" id="parent_password" name="parent_password" class="form-control" placeholder="Parent Password" required>
+                
+                <label for="phone_number">Phone Number:</label>
+                <input type="text" id="phone_number" name="phone_number" class="form-control" placeholder="Phone Number">
+                
+                <label for="student_photo">Student Photo:</label>
+                <input type="file" id="student_photo" name="student_photo" class="form-control" accept="image/*" required>
+                
+                <button type="submit" class="submit-btn">Add Student</button>
+            </form>
+            <div id="message" class="message"></div>
+        </div>
+        
+        <a href="{{ url_for('headteacher_dashboard_page') }}" class="back-link">Back to dashboard</a>
+    </div>
+
+    <script>
+        document.getElementById('addStudentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = '';
+
+            try {
+                const response = await fetch(`{{ url_for('add_student_route') }}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    messageDiv.textContent = result.message;
+                    setTimeout(() => location.reload(), 1000);
+                }
+            } catch (err) {
+                // No error display as per request
+            }
+        });
+    </script>
+</body>
+</html>

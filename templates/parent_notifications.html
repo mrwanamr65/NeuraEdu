@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Notifications</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/parent_dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1 class="typewriter-text">Parent Notifications</h1>
+            <p class="subtitle">Notifications for all parents</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Parent Notifications</h2>
+            <div class="notifications-container">
+                <div class="notification-list">
+                    {% if notifications %}
+                        {% for notification in notifications %}
+                        <div class="notification-item">
+                            <div class="notification-title">{{ notification.title }}</div>
+                            <div class="notification-text">{{ notification.notification }}</div>
+                            {% if notification.notes %}
+                            <div class="notification-notes">Notes: {{ notification.notes }}</div>
+                            {% endif %}
+                            <div class="notification-date">Date: {{ notification.created_at }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <p class="no-notifications">No parent notifications found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <!-- رابط العودة للداشبورد باستخدام url_for وبدون تمرير معلمات يدوية -->
+            <a href="{{ url_for('parent_dashboard') }}" class="back-link">Back to Dashboard</a>
+            <!-- رابط تسجيل الخروج باستخدام url_for للـ index -->
+            <a href="{{ url_for('index') }}" class="logout-link">Logout</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Classes</title>
+    <!-- ربط ملف CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_classes.css') }}">
+    <!-- خط Cairo للدعم الجيد -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+        <div class="star"></div><div class="star"></div><div class="star"></div>
+    </div>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="container">
+
+        <!-- عنوان بتأثير الكتابة -->
+        <h1 class="typewriter-text">Manage Classes</h1>
+
+        <!-- عرض الفصول الحالية -->
+        <div class="section">
+            <h2 class="section-title">Current Classes</h2>
+            {% if classes %}
+                {% for class in classes %}
+                    <div class="class-item">
+                        <span>{{ class }}</span>
+                        <button class="delete-btn" data-class="{{ class }}">Delete</button>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-classes">No classes available.</p>
+            {% endif %}
+        </div>
+
+        <!-- إضافة فصل جديد -->
+        <div class="section">
+            <h2 class="section-title">Add New Class</h2>
+            <div class="form-container">
+                <form id="addClassForm" class="add-class-form">
+                    <label for="grade">Grade:</label>
+                    <input type="number" id="grade" name="grade" min="1" max="12" placeholder="e.g., 5" required>
+                    <label for="number">Class Number:</label>
+                    <input type="number" id="number" name="number" min="1" placeholder="e.g., 3" required>
+                    <button type="submit" class="add-btn">Add Class</button>
+                </form>
+                <p id="message" class="message" style="display: none;"></p>
+            </div>
+        </div>
+
+        <!-- زر التهيئة -->
+        <a href="{{ url_for('configure_classes') }}" class="configure-btn">Configure Classes</a>
+
+        <!-- رابط العودة -->
+        <a href="{{ url_for('headteacher_dashboard_page') }}" class="back-link">Back to Dashboard</a>
+    </div>
+
+    <script>
+        // إضافة فصل جديد
+        document.getElementById('addClassForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const grade = document.getElementById('grade').value;
+            const number = document.getElementById('number').value;
+            const className = `class${grade}_${number}`;
+            const messageEl = document.getElementById('message');
+
+            try {
+                const response = await fetch("{{ url_for('head_classes') }}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ class_name: className })
+                });
+                const result = await response.json();
+
+                if (response.ok) {
+                    messageEl.textContent = result.message;
+                    messageEl.className = 'message';
+                    messageEl.style.display = 'block';
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    messageEl.textContent = result.error || 'Failed to add class';
+                    messageEl.className = 'error';
+                    messageEl.style.display = 'block';
+                }
+            } catch (err) {
+                messageEl.textContent = 'An error occurred while adding the class.';
+                messageEl.className = 'error';
+                messageEl.style.display = 'block';
+            }
+        });
+
+        // حذف فصل
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                const className = button.getAttribute('data-class');
+                if (!confirm(`Are you sure you want to delete class "${className}"?`)) return;
+
+                try {
+                    const response = await fetch("{{ url_for('delete_class') }}", {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ class_name: className })
+                    });
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        alert(result.message);
+                        location.reload();
+                    } else {
+                        alert(result.error || 'Failed to delete class');
+                    }
+                } catch (err) {
+                    alert('An error occurred while deleting the class.');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

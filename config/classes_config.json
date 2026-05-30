@@ -1,0 +1,37 @@
+[
+    {
+        "faces_path": "./faces/class1_1",
+        "dbname": "schooldata",
+        "class_name": "class1_1",
+        "cam_num": 0,
+        "config_file": "./config/schedules.json"
+    },
+    {
+        "faces_path": "./faces/class3_2",
+        "dbname": "schooldata",
+        "class_name": "class3_2",
+        "cam_num": 3,
+        "config_file": "./config/schedules.json"
+    },
+    {
+        "faces_path": "./faces/class1_2",
+        "dbname": "schooldata",
+        "class_name": "class1_2",
+        "cam_num": 1,
+        "config_file": "./config/schedules.json"
+    },
+    {
+        "faces_path": "./faces/class2_3",
+        "dbname": "schooldata",
+        "class_name": "class2_3",
+        "cam_num": 2,
+        "config_file": "./config/schedules.json"
+    },
+    {
+        "faces_path": "./faces/class10_1",
+        "dbname": "schooldata3",
+        "class_name": "class10_1",
+        "cam_num": 1,
+        "config_file": "./config/schedules.json"
+    }
+]

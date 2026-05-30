@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Notification</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add_notifications.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- دوائر الخلفية المتحركة -->
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="container">
+        <h1 class="typewriter-text">Add New Notification</h1>
+        <p class="description">Please fill in the notification details below</p>
+        <form method="POST" action="{{ url_for('add_notification', class_name=class_name) }}">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" class="form-control" placeholder="Enter notification title" required>
+            <span class="input-hint">Enter a clear and concise title for the notification</span>
+
+            <label for="notification">Notification</label>
+            <textarea id="notification" name="notification" class="form-control" placeholder="Enter the main notification content" required></textarea>
+            <span class="input-hint">Enter the main content of the notification</span>
+
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" class="form-control" placeholder="Enter any additional notes (optional)"></textarea>
+            <span class="input-hint">Add any additional notes or information (optional)</span>
+
+            <button type="submit" class="add-btn">Add Notification</button>
+        </form>
+    </div>
+</body>
+</html>

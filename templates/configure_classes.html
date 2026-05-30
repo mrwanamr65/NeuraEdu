@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure Classes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/configure_classes.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- خلفية دوائر -->
+<div class="circles">
+    <div></div><div></div><div></div><div></div><div></div>
+    <div></div><div></div><div></div><div></div><div></div>
+</div>
+
+<!-- نجوم متحركة -->
+<div class="stars"></div>
+
+<!-- الحاوية الرئيسية -->
+<div class="container">
+
+    <!-- عنوان -->
+    <h1 class="typewriter-text">Configure Classes</h1>
+
+    <!-- إعداد الفصول -->
+    <div class="class-config-list">
+        <h2>Class Configurations</h2>
+        {% if classes %}
+            {% for class in classes %}
+                <div class="class-config-item">
+                    <span>{{ class.class_name }}</span>
+                    {% if class.configured %}
+                        <span class="configured">Configured</span>
+                        <form class="update-config-form" data-class="{{ class.class_name }}">
+                            <label>Camera Number:</label>
+                            <input type="number" name="cam_num" value="{{ class.cam_num }}" min="0" required>
+                            <button type="button" class="update-btn">Update</button>
+                        </form>
+                    {% else %}
+                        <span class="not-configured">Not Configured</span>
+                        <form class="configure-form" data-class="{{ class.class_name }}">
+                            <label>Camera Number:</label>
+                            <input type="number" name="cam_num" min="0" placeholder="Camera Number" required>
+                            <button type="button" class="configure-btn">Configure</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No classes available.</p>
+        {% endif %}
+    </div>
+
+    <!-- إدارة الجداول -->
+    <div class="schedule-container">
+        <h2>Class Schedules</h2>
+        {% if schedules.classes_times %}
+            {% for times in schedules.classes_times %}
+                <div class="schedule-item">
+                    <span>Period {{ loop.index }}: {{ times[0] }} - {{ times[1] }}</span>
+                    <form class="update-schedule-form" data-index="{{ loop.index0 }}">
+                        <label>From:</label>
+                        <input type="time" name="start_time" value="{{ times[0] }}" required>
+                        <label>To:</label>
+                        <input type="time" name="end_time" value="{{ times[1] }}" required>
+                        <button type="button" class="update-schedule-btn">Update</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No schedules available.</p>
+        {% endif %}
+    </div>
+
+    <!-- رابط رجوع -->
+    <a href="{{ url_for('head_classes') }}" class="back-link">Back to Manage Classes</a>
+</div>
+
+<script>
+    // إنشاء النجوم ديناميكياً
+    function createStars() {
+        const starsContainer = document.querySelector('.stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animationDelay = `${Math.random() * 5}s`;
+            star.style.animationDuration = `${3 + Math.random() * 5}s`;
+            starsContainer.appendChild(star);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        createStars();
+    });
+
+    // Configure Class
+    document.querySelectorAll('.configure-form').forEach(form => {
+        const configureBtn = form.querySelector('.configure-btn');
+        if (configureBtn) {
+            configureBtn.addEventListener('click', async () => {
+                const className = form.getAttribute('data-class');
+                const camNum = form.querySelector('input[name="cam_num"]').value;
+                
+                if (!camNum) {
+                    alert("Please enter a camera number.");
+                    return;
+                }
+                
+                try {
+                    const response = await fetch("{{ url_for('configure_class') }}", {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            class_name: className, 
+                            cam_num: camNum,
+                            stage: "{{ session['school_stage'] }}" 
+                        })
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        location.reload();
+                    } else {
+                        alert("Failed: " + (result.error || "Unknown error"));
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Error configuring class.");
+                }
+            });
+        }
+    });
+
+    // Update Class Configuration
+    document.querySelectorAll('.update-config-form').forEach(form => {
+        const updateBtn = form.querySelector('.update-btn');
+        if (updateBtn) {
+            updateBtn.addEventListener('click', async () => {
+                const className = form.getAttribute('data-class');
+                const camNum = form.querySelector('input[name="cam_num"]').value;
+                
+                if (!camNum) {
+                    alert("Please enter a camera number.");
+                    return;
+                }
+                
+                try {
+                    const response = await fetch("{{ url_for('update_class_config') }}", {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            class_name: className, 
+                            cam_num: camNum,
+                            stage: "{{ session['school_stage'] }}" 
+                        })
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        location.reload();
+                    } else {
+                        alert("Failed: " + (result.error || "Unknown error"));
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Error updating configuration.");
+                }
+            });
+        }
+    });
+
+    // Update Schedule
+    document.querySelectorAll('.update-schedule-form').forEach(form => {
+        const updateScheduleBtn = form.querySelector('.update-schedule-btn');
+        if (updateScheduleBtn) {
+            updateScheduleBtn.addEventListener('click', async () => {
+                const index = form.getAttribute('data-index');
+                const startTime = form.querySelector('input[name="start_time"]').value;
+                const endTime = form.querySelector('input[name="end_time"]').value;
+                
+                if (!startTime || !endTime) {
+                    alert("Please enter both start and end times.");
+                    return;
+                }
+                
+                try {
+                    const response = await fetch("{{ url_for('update_schedule') }}", {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            index: parseInt(index), 
+                            start_time: startTime, 
+                            end_time: endTime,
+                            stage: "{{ session['school_stage'] }}" 
+                        })
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        location.reload();
+                    } else {
+                        alert("Failed: " + (result.error || "Unknown error"));
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Error updating schedule.");
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

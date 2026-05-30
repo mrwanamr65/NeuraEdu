@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chats Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chats.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- النجوم المتلألئة -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <!-- العناصر العائمة -->
+    <div class="background-animation">
+        <div class="floating-icon"><i class="fas fa-comment"></i></div>
+        <div class="floating-icon"><i class="fas fa-users"></i></div>
+        <div class="floating-icon"><i class="fas fa-envelope"></i></div>
+        <div class="floating-icon"><i class="fas fa-comments"></i></div>
+        <div class="floating-icon"><i class="fas fa-message"></i></div>
+        <div class="floating-icon"><i class="fas fa-user-friends"></i></div>
+        <div class="floating-icon"><i class="fas fa-paper-plane"></i></div>
+        <div class="floating-icon"><i class="fas fa-chat"></i></div>
+    </div>
+
+    <div class="container">
+        <div class="typewriter-container">
+            <h1 class="typewriter-text">Chats Dashboard</h1>
+        </div>
+        
+        <p class="gradient-subtitle">Manage your conversations and contacts</p>
+        
+        <!-- شريط البحث -->
+        <div class="chats-search-container">
+            <i class="fas fa-search chats-search-icon"></i>
+            <input type="text" id="searchContacts" class="chats-search-input" placeholder="Search contacts by name or code...">
+        </div>
+        
+        <div class="chats-container">
+            <!-- Section 1: Existing Conversations -->
+            <div class="chats-section">
+                <h2><i class="fas fa-comments"></i> Existing Conversations</h2>
+                <div id="existingChatsList">
+                    {% if existing_conversations %}
+                        {% for conv in existing_conversations %}
+                            <div class="chat-item" data-name="{{ conv.contact_name|lower }}" data-code="{{ conv.contact_code|lower }}">
+                                <a href="{{ url_for('chat_room', contact_code=conv.contact_code, contact_type=conv.contact_type) }}">
+                                    <p><strong>Name:</strong> {{ conv.contact_name }}</p>
+                                    <p><strong>Code:</strong> {{ conv.contact_code }}</p>
+                                    <p><strong>Type:</strong> {{ conv.contact_type|capitalize }}</p>
+                                    {% if conv.last_message %}
+                                    <p class="last-message"><strong>Last Message:</strong> {{ conv.last_message }}</p>
+                                    {% endif %}
+                                    {% if conv.created_at %}
+                                    <p class="timestamp"><strong>Time:</strong> {{ conv.created_at }}</p>
+                                    {% endif %}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-data">No conversations yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Section 2: Available Contacts -->
+            <div class="chats-section">
+                <h2><i class="fas fa-user-friends"></i> Available Contacts</h2>
+                <div id="availableContactsList">
+                    {% if available_contacts %}
+                        {% for contact in available_contacts %}
+                            {% if contact.code and contact.code|trim != '' %}
+                                <div class="contact-item" data-name="{{ contact.name|lower }}" data-code="{{ contact.code|lower }}">
+                                    <a href="{{ url_for('chat_room', contact_code=contact.code, contact_type=contact.type) }}">
+                                        <p><strong>Name:</strong> {{ contact.name }}</p>
+                                        <p><strong>Code:</strong> {{ contact.code }}</p>
+                                        <p><strong>Type:</strong> {{ contact.type|capitalize }}</p>
+                                    </a>
+                                </div>
+                            {% else %}
+                                <p class="no-data">Invalid contact: {{ contact.name|default('Unknown') }} (Code missing)</p>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-data">No available contacts.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // وظيفة البحث عن جهات الاتصال - إصدار محسّن
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchContacts');
+            const existingChats = document.querySelectorAll('#existingChatsList .chat-item');
+            const availableContacts = document.querySelectorAll('#availableContactsList .contact-item');
+            const existingChatsList = document.getElementById('existingChatsList');
+            const availableContactsList = document.getElementById('availableContactsList');
+            
+            // حفظ العناصر الأصلية
+            const originalExistingHTML = existingChatsList.innerHTML;
+            const originalAvailableHTML = availableContactsList.innerHTML;
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                if (searchTerm === '') {
+                    // إذا كان حقل البحث فارغًا، عرض جميع العناصر
+                    existingChatsList.innerHTML = originalExistingHTML;
+                    availableContactsList.innerHTML = originalAvailableHTML;
+                    return;
+                }
+                
+                // البحث في المحادثات الموجودة
+                let existingResults = 0;
+                existingChats.forEach(item => {
+                    const name = item.getAttribute('data-name');
+                    const code = item.getAttribute('data-code');
+                    
+                    if (name.includes(searchTerm) || code.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        existingResults++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // البحث في جهات الاتصال المتاحة
+                let availableResults = 0;
+                availableContacts.forEach(item => {
+                    const name = item.getAttribute('data-name');
+                    const code = item.getAttribute('data-code');
+                    
+                    if (name.includes(searchTerm) || code.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        availableResults++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // إظهار رسالة إذا لم يتم العثور على نتائج
+                if (existingResults === 0) {
+                    existingChatsList.innerHTML = '<p class="no-data">No matching conversations found.</p>';
+                }
+                
+                if (availableResults === 0) {
+                    availableContactsList.innerHTML = '<p class="no-data">No matching contacts found.</p>';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
