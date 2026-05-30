@@ -66,15 +66,15 @@ A custom-built, secure messaging engine:
 
 ## 📸 System Previews
 
-> **Note:** Screenshots highlighting the Glassmorphism UI and the YOLOv8 Detection window.
+> **Note:** A glimpse into the Glassmorphism UI tailored for 5 distinct educational roles.
 
-| Admin Analytics Dashboard | AI Camera Detection in Action |
-| :---: |
-| ![Admin Dashboard](imgs/admin.png) 
-![Headteacher Dashboard](imgs/headteacher.png) 
-![Teacher Dashboard](imgs/teacher.png) 
-![Student Dashboard](imgs/student.png) 
-![Parent Dashboard](imgs/parent.png) | ![Home Page](imgs/main.png) |
+| 🌐 Home Page | 📊 Admin Dashboard | 🏫 Headteacher |
+| :---: | :---: | :---: |
+| ![Home Page](imgs/main.png) | ![Admin Dashboard](imgs/admin.png) | ![Headteacher](imgs/headteacher.png) |
+
+| 🧑‍🏫 Teacher Portal | 👩‍🎓 Student Portal | 👪 Parent Portal |
+| :---: | :---: | :---: |
+| ![Teacher Dashboard](imgs/teacher.png) | ![Student Dashboard](imgs/student.png) | ![Parent Dashboard](imgs/parent.png) |
 
 ---
 
